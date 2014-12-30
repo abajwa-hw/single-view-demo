@@ -140,7 +140,7 @@ vi /tmp/test.txt
 21612169,http://www.hortonworks.com,2014,12,29
 ```
 
-- In Ambari > Flume > Config > flume.conf
+- In Ambari > Flume > Config > flume.conf enter the below and restart Flume
 ```
 
 ## Flume NG Apache Log Collection
