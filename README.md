@@ -32,7 +32,6 @@ hive.heapsize=1024
 hive.tez.container.size=1024
 hive.tez.java.opts=-Xmx820m
 ```
-
   - Under Hive config, turn on Hive txns (only worker threads property needs to be changed in 2.2 sandbox):
 ```
 hive.support.concurrency=true
@@ -42,20 +41,17 @@ hive.compactor.worker.threads=2
 hive.enforce.bucketing=true
 hive.exec.dynamic.partition.mode=nonstrict
 ```
-
   - Under YARN config, increase YARN memory settings:
 ```
 yarn.nodemanager.resource.memory-mb=4096
 yarn.scheduler.minimum-allocation-mb=1024
 yarn.scheduler.maximum-allocation-mb=4096
 ```
-
   - Under YARN config, define queues - change these two existing properties:
 ```
 yarn.scheduler.capacity.root.default.capacity=50
 yarn.scheduler.capacity.root.queues=default,hiveserver	
 ```
-
   - Under YARN config, define sub-queues - add below new properties:
 ```
 yarn.scheduler.capacity.root.hiveserver.capacity=50
@@ -73,7 +69,6 @@ yarn.resourcemanager.monitor.capacity.preemption.monitoring_interval=1000
 yarn.resourcemanager.monitor.capacity.preemption.max_wait_before_kill=5000
 yarn.resourcemanager.monitor.capacity.preemption.total_preemption_per_round=0.4
 ```
-
   - Under Hive config, enable Tez and sessions (few of these already set in 2.2)
 ```
 hive.execution.engine=tez
@@ -83,7 +78,6 @@ hive.server2.tez.sessions.per.default.queue=1
 hive.server2.enable.doAs=false
 hive.vectorized.groupby.maxentries=10240
 hive.vectorized.groupby.flush.percent=0.1
-
 ```
 
 
