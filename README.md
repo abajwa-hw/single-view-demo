@@ -24,46 +24,58 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 ssh root@sandbox.hortonworks.com
 /root/start_ambari.sh
 ```
-- After bringing up Ambari, also make the below Pig config changes to enable Tez and restart Pig. Also shutdown any non-critical components to conserve memory
+- After bringing up Ambari, also make the below config changes to Hive and YARN
+
+Under Hive config, increase memory settings: 
 ```
-#Hive
 hive.heapsize=1024 
 hive.tez.container.size=1024
 hive.tez.java.opts=-Xmx820m
+```
 
-#Turn on txns (only worker threads needs to be changed in 2.2 sandbox)
+Under Hive config, turn on Hive txns (only worker threads property needs to be changed in 2.2 sandbox):
+```
 hive.support.concurrency=true
 hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
 hive.compactor.initiator.on=true
 hive.compactor.worker.threads=2
 hive.enforce.bucketing=true
 hive.exec.dynamic.partition.mode=nonstrict
+```
 
-#YARN
+Under YARN config, increase YARN memory settings:
+```
 yarn.nodemanager.resource.memory-mb=4096
 yarn.scheduler.minimum-allocation-mb=1024
 yarn.scheduler.maximum-allocation-mb=4096
+```
 
-#YARN - define queues - change these two
+Under YARN config, define queues - change these two existing properties:
+```
 yarn.scheduler.capacity.root.default.capacity=50
 yarn.scheduler.capacity.root.queues=default,hiveserver	
-#define queues - add below
+```
+
+Under YARN config, define sub-queues - add below new properties:
+```
 yarn.scheduler.capacity.root.hiveserver.capacity=50
 yarn.scheduler.capacity.root.hiveserver.hive1.capacity=50
 yarn.scheduler.capacity.root.hiveserver.hive1.user-limit-factor=4
 yarn.scheduler.capacity.root.hiveserver.hive2.capacity=50
 yarn.scheduler.capacity.root.hiveserver.hive2.user-limit-factor=4
 yarn.scheduler.capacity.root.hiveserver.queues=hive1,hive2
-
-#YARN - enable preemption
+```
+Under YARN config, enable preemption:
+```
 yarn.resourcemanager.scheduler.monitor.enable=true
 yarn.resourcemanager.scheduler.monitor.policies=org.apache.hadoop.yarn.server.resourcemanager.monitor.capacity.ProportionalCapacityPreemptionPolicy
 yarn.resourcemanager.monitor.capacity.preemption.monitoring_interval=1000
 yarn.resourcemanager.monitor.capacity.preemption.max_wait_before_kill=5000
 yarn.resourcemanager.monitor.capacity.preemption.total_preemption_per_round=0.4
+```
 
-
-#Tez and sessions (few of these already set in 2.2)
+Under Hive config, enable Tez and sessions (few of these already set in 2.2)
+```
 hive.execution.engine=tez
 hive.server2.tez.initialize.default.sessions=true
 hive.server2.tez.default.queues=hive1,hive2
@@ -100,7 +112,7 @@ ln -s /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-conn
 ls -la /usr/share/java/my*
 ```
 
-- Notice only two tables in HCAT
+- Notice in HCat there is no persons table
 http://sandbox.hortonworks.com:8000/hcatalog/
 
 - Import data from MySQL to Hive ORC table using Sqoop
