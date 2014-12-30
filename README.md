@@ -1,11 +1,11 @@
 ## Hive streaming demo
-This demo is part of a ' Interactive Query with Apache Hive' webinar.
+This demo is part of a 'Interactive Query with Apache Hive' webinar.
 
 The webinar recording and slides are available at http://hortonworks.com/partners/learn
 
 #### Demo overview
 
-1. Scoop - import personal data of users from MySql into Hive ORCH table 
+1. Scoop - import personal data of users from MySql into Hive ORC table 
 2. Flume - import browsing history of users into Hive ORC table ie userid,webpage,timestamp
 3. Storm - import tweets for those 400 users into Hive ORC table 
 4. Run Hive queries
