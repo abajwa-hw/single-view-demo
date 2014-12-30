@@ -5,7 +5,7 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 
 #### Demo overview
 
-1. Scoop - import personal data of users from MySql into Hive ORC table 
+1. Sqoop - import personal data of users from MySql into Hive ORC table 
 2. Flume - import browsing history of users into Hive ORC table ie userid,webpage,timestamp
 3. Storm - import tweets for those 400 users into Hive ORC table 
 4. Run Hive queries
@@ -93,11 +93,12 @@ select people_id, firstname, lastname, city from persons where lastname='SMITH';
 ```
 
 - Make Sqoop use newer version of mysql connector. This is a workaround for [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400)
+```
 cp /usr/hdp/2.2.0.0-2041/ranger-admin/ews/webapp/WEB-INF/lib/mysql-connector-java-5.1.31.jar /usr/share/java/
 rm -f /usr/share/java/mysql-connector-java.jar
 ln -s /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-connector-java.jar
 ls -la /usr/share/java/my*
-
+```
 
 - Notice only two tables in HCAT
 http://sandbox.hortonworks.com:8000/hcatalog/
