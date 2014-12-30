@@ -96,12 +96,15 @@ create database people;
 use people;
 create table persons (people_id INT PRIMARY KEY, sex VARCHAR(10), bdate DATE, firstname VARCHAR(50), lastname VARCHAR(50), addresslineone VARCHAR(150), addresslinetwo VARCHAR(150), city VARCHAR(100), postalcode VARCHAR(10), ssn VARCHAR(100), id2 VARCHAR(100), email VARCHAR(150), id3 VARCHAR(150));
 LOAD DATA LOCAL INFILE '~/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+```
+Now verify that the data was imported
+```
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 ```
-- Notice in HCat there is no persons table
+- Notice in HCat there is no persons table yet
 http://sandbox.hortonworks.com:8000/hcatalog/
 
-- Make Sqoop use newer version of mysql connector. This is a workaround for [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400)
+- Point Sqoop to a newer version of mysql connector. This is a workaround needed for [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400)
 ```
 cp /usr/hdp/2.2.0.0-2041/ranger-admin/ews/webapp/WEB-INF/lib/mysql-connector-java-5.1.31.jar /usr/share/java/
 rm -f /usr/share/java/mysql-connector-java.jar
@@ -114,7 +117,7 @@ ls -la /usr/share/java/my*
 sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table --fetch-size -2147483648
 ```
 
-- Now notice persons table created and has 999,396 records
+- Now notice persons table created and has data
 
 - Open the table in Hive and click view file location and then on part-m-00000
 http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
