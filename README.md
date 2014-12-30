@@ -24,7 +24,7 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 ssh root@sandbox.hortonworks.com
 /root/start_ambari.sh
 ```
-- After bringing up Ambari, also make the below config changes to Hive and YARN
+After bringing up Ambari, also make the below config changes to Hive and YARN
 
   - Under Hive config, increase memory settings: 
 ```
