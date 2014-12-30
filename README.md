@@ -5,12 +5,13 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 
 #### Demo overview
 
-1. Sqoop - import personal data of users from MySql into Hive ORC table 
-2. Flume - import browsing history of users into Hive ORC table ie userid,webpage,timestamp
-3. Storm - import tweets for those 400 users into Hive ORC table 
-4. Run Hive queries
+1. Enable Hive features like transactions, queues, preemption, Tez and sessions
+2. Sqoop - import personal data of users from MySql into Hive ORC table 
+3. Flume - import browsing history of users into Hive ORC table ie userid,webpage,timestamp
+4. Storm - import tweets for those 400 users into Hive ORC table 
+5. Run Hive queries
 
-##### Setup demo on HDP 2.2 sandbox VM 
+##### Step 1 - Start sandbox VM and enable Hive features 
 
 - Download HDP 2.2 sandbox VM image (Sandbox_HDP_2.2_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
 - Import Sandbox_HDP_2.2_VMware.ova into VMWare
@@ -81,7 +82,7 @@ hive.vectorized.groupby.flush.percent=0.1
 ```
 
 
-##### Step 1 - Import data from MySQL to Hive ORC table via Sqoop 
+##### Step 2 - Import data from MySQL to Hive ORC table via Sqoop 
 - FTP over PII_data_small.csv.zip and unzip it
 ```
 unzip ~/PII_data_small.csv.zip
@@ -125,7 +126,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/person
 - Compare the contents of sample_07 which is stored in text format
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample_07/sample_07
 
-##### Step 2 - Import web history data from log file to Hive ORC table via Flume 
+##### Step 3 - Import web history data from log file to Hive ORC table via Flume 
 
 - Create table test allowing transactions and partition into day month year (flume interseptor adds timestamp header to payload then specific hiveout.hive.partition)
 ````
