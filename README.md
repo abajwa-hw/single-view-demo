@@ -98,6 +98,8 @@ create table persons (people_id INT PRIMARY KEY, sex VARCHAR(10), bdate DATE, fi
 LOAD DATA LOCAL INFILE '~/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 ```
+- Notice in HCat there is no persons table
+http://sandbox.hortonworks.com:8000/hcatalog/
 
 - Make Sqoop use newer version of mysql connector. This is a workaround for [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400)
 ```
@@ -107,10 +109,7 @@ ln -s /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-conn
 ls -la /usr/share/java/my*
 ```
 
-- Notice in HCat there is no persons table
-http://sandbox.hortonworks.com:8000/hcatalog/
-
-- Import data from MySQL to Hive ORC table using Sqoop
+- Import data from MySQL to Hive ORC table using Sqoop (the fetch size is part of the workaround)
 ```
 sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table --fetch-size -2147483648
 ```
