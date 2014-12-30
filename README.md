@@ -26,7 +26,7 @@ ssh root@sandbox.hortonworks.com
 ```
 - After bringing up Ambari, also make the below config changes to Hive and YARN
 
-Under Hive config, increase memory settings: 
+  - Under Hive config, increase memory settings: 
 ```
 hive.heapsize=1024 
 hive.tez.container.size=1024
