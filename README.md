@@ -100,6 +100,7 @@ LOAD DATA LOCAL INFILE '~/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS 
 Now verify that the data was imported
 ```
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
+exit;
 ```
 - Notice in HCat there is no persons table yet
 http://sandbox.hortonworks.com:8000/hcatalog/
