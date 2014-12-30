@@ -1,4 +1,4 @@
-## Hive streaming demo
+## Hive streaming workshop
 This demo is part of a 'Interactive Query with Apache Hive' webinar.
 
 The webinar recording and slides are available at http://hortonworks.com/partners/learn
