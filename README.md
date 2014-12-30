@@ -109,12 +109,64 @@ sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons
 
 - Now notice persons table created and has 999,396 records
 
- - open the table in Hive and click view file location and then on part-m-00000
+- Open the table in Hive and click view file location and then on part-m-00000
 http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
 
-- notice the table is stored in ORC format
+- Notice the table is stored in ORC format
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/persons/part-m-00000
 
-- compare the contents of sample_07 which is stored in text format
+- Compare the contents of sample_07 which is stored in text format
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample_07/sample_07
 
+##### Step 2 - Import web history data from log file to Hive ORC table via Flume 
+
+- Create table test allowing transactions and partition into day month year (flume interseptor adds timestamp header to payload then specific hiveout.hive.partition)
+````
+create table if not exists test (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");
+````
+- Create dummy web traffic log
+```
+vi /tmp/test.txt
+6856266,http://www.google.com,2014,12,29
+18426858,http://www.yahoo.com,2014,12,29
+21612169,http://www.hortonworks.com,2014,12,29
+```
+
+- In Ambari > Flume > Config > flume.conf
+```
+
+## Flume NG Apache Log Collection
+## Refer to https://cwiki.apache.org/confluence/display/FLUME/Getting+Started
+##
+
+agent.sources = webserver
+agent.sources.webserver.type = exec
+agent.sources.webserver.command = tail -F /tmp/test.txt
+agent.sources.webserver.batchSize = 1
+agent.sources.webserver.channels = memoryChannel
+agent.sources.webserver.interceptors = intercepttime
+agent.sources.webserver.interceptors.intercepttime.type = timestamp
+
+## Channels ########################################################
+agent.channels = memoryChannel
+agent.channels.memoryChannel.type = memory
+agent.channels.memoryChannel.capacity = 10000
+
+## Sinks ###########################################################
+
+agent.sinks = hiveout
+agent.sinks.hiveout.type = hive
+agent.sinks.hiveout.hive.metastore=thrift://localhost:9083
+agent.sinks.hiveout.hive.database=default
+agent.sinks.hiveout.hive.table=test
+agent.sinks.hiveout.hive.partition=%Y,%m,%d
+agent.sinks.hiveout.serializer = DELIMITED
+agent.sinks.hiveout.serializer.fieldnames =id,val
+agent.sinks.hiveout.channel = memoryChannel
+```
+
+- Now notice test table now has records created
+http://sandbox.hortonworks.com:8000/beeswax/table/default/test
+
+- Notice the table is stored in ORC format
+http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/test/year=2014/month=12/day=29/delta_0000001_0000100/bucket_00017
