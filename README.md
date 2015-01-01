@@ -81,6 +81,7 @@ hive.vectorized.groupby.maxentries=10240
 hive.vectorized.groupby.flush.percent=0.1
 ```
 
+More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
 
 ##### Step 2 - Import data from MySQL to Hive ORC table via Sqoop 
 - FTP over PII_data_small.csv.zip and unzip it
@@ -133,15 +134,9 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample
 
 - Create table test allowing transactions and partition into day month year (flume interseptor adds timestamp header to payload then specific hiveout.hive.partition)
 ````
-hive -e 'create table if not exists test (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");'
+hive -e 'create table if not exists webtraffic (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");'
 ````
-- Create dummy web traffic log
-```
-vi /tmp/test.txt
-6856266,http://www.google.com,2014,12,29
-18426858,http://www.yahoo.com,2014,12,29
-21612169,http://www.hortonworks.com,2014,12,29
-```
+
 
 - In Ambari > Flume > Config > flume.conf enter the below and restart Flume
 ```
@@ -152,8 +147,8 @@ vi /tmp/test.txt
 
 agent.sources = webserver
 agent.sources.webserver.type = exec
-agent.sources.webserver.command = tail -F /tmp/test.txt
-agent.sources.webserver.batchSize = 1
+agent.sources.webserver.command = tail -F /tmp/webtraffic.log
+agent.sources.webserver.batchSize = 20
 agent.sources.webserver.channels = memoryChannel
 agent.sources.webserver.interceptors = intercepttime
 agent.sources.webserver.interceptors.intercepttime.type = timestamp
@@ -163,21 +158,133 @@ agent.channels = memoryChannel
 agent.channels.memoryChannel.type = memory
 agent.channels.memoryChannel.capacity = 10000
 
+
 ## Sinks ###########################################################
 
 agent.sinks = hiveout
 agent.sinks.hiveout.type = hive
 agent.sinks.hiveout.hive.metastore=thrift://localhost:9083
 agent.sinks.hiveout.hive.database=default
-agent.sinks.hiveout.hive.table=test
+agent.sinks.hiveout.hive.table=webtraffic
+agent.sinks.hiveout.hive.batchSize=1
 agent.sinks.hiveout.hive.partition=%Y,%m,%d
 agent.sinks.hiveout.serializer = DELIMITED
 agent.sinks.hiveout.serializer.fieldnames =id,val
 agent.sinks.hiveout.channel = memoryChannel
 ```
+- Start tailing the webtraffic file in one terminal....
+```
+tail -F /tmp/webtraffic.log
+```
+- Generate 200 dummy web traffic log events in another terminal
+```
+./createlog.sh "/root/PII_data_small.csv" 200 >> /tmp/webtraffic.log
+```
 
 - Now notice test table now has records created
-http://sandbox.hortonworks.com:8000/beeswax/table/default/test
+http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
 
 - Notice the table is stored in ORC format
-http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/test/year=2014/month=12/day=29/delta_0000001_0000100/bucket_00017
+http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtraffic
+
+
+
+##### Step 4: Import tweets for users into Hive ORC table via Storm
+
+- Install mvn under /usr/share/maven
+```
+mkdir /usr/share/maven
+cd /usr/share/maven
+wget http://mirrors.koehn.com/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
+tar xvzf apache-maven-3.2.5-bin.tar.gz
+ln -s /usr/share/maven/apache-maven-3.2.5/ /usr/share/maven/latest
+echo 'M2_HOME=/usr/share/maven/latest' >> ~/.bashrc
+echo 'M2=$M2_HOME/bin' >> ~/.bashrc
+echo 'PATH=$PATH:$M2' >> ~/.bashrc
+export M2_HOME=/usr/share/maven/latest
+export M2=$M2_HOME/bin
+export PATH=$PATH:$M2
+```
+- Make hive config changes to enable transactions, if not already done above
+```
+hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
+hive.compactor.initiator.on = true
+hive.compactor.worker.threads > 0 
+```
+
+- Create hive table for tweets that has transactions turned on and ORC enabled
+```
+hive -e 'create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 12 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');'
+hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
+```
+
+- Pull the latest Hive streaming code
+```
+cd
+git clone https://github.com/abajwa-hw/hdp22-hive-streaming.git 
+```
+- Build the storm uber jar (may take 5-10min first time)
+```
+cd /root/hdp22-hive-streaming
+mvn package
+```
+
+- In case your system time is not accurate, fix it to avoid errors from Twitter4J
+```
+service ntpd stop
+ntpdate pool.ntp.org
+service ntpd start
+```
+
+- Run the topology on the cluster (make sure Storm is up first and twitter_topology does not already exist)
+storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
+
+Note: to run in local mode, run the above without the twitter_topology argument
+
+- After seeing 10 tweets, query the table and notice it now contains tweets
+```
+hive -e 'select * from user_tweets;'
+```
+
+Note: you can configure this when declaring the HiveOptions
+
+- Notice the table is stored in ORC format
+http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tweets
+
+- In case you want to empty the table for future runs, you can run below (this is only possible if transactions are turned on)
+```
+hive -e 'delete from user_tweets;'
+```
+
+##### Step 5: Run Hive query to correlate the data from thee different sources
+
+- Check size of PII table
+```
+select count(*) from persons;
+```
+returns 999396 rows
+
+- Correlate tweets with PII data
+```
+select t.userid, t.twitterid, p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet 
+from persons p, user_tweets t 
+where t.userid = p.people_id;
+```
+Returns 1360 rows
+
+- Correlate browsing history with PII data
+```
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
+from persons p, webtraffic w 
+where w.id = p.people_id;
+```
+Returns 118 rows
+
+- Correlate all 3
+```
+select p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet, w.val
+from persons p, user_tweets t, webtraffic w 
+where w.id = t.userid and t.userid = p.people_id
+```
+Returns 1 row
+
