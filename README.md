@@ -84,9 +84,14 @@ hive.vectorized.groupby.flush.percent=0.1
 More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
 
 ##### Step 2 - Import data from MySQL to Hive ORC table via Sqoop 
-- FTP over PII_data_small.csv.zip and unzip it
+- Pull the latest Hive streaming code/scripts
 ```
-unzip ~/PII_data_small.csv.zip
+cd
+git clone https://github.com/abajwa-hw/hdp22-hive-streaming.git 
+```
+- Inspect CSV of user personal data
+```
+cat ~/hdp22-hive-streaming/data/PII_data_small.csv
 ```
 - Import users personal data into MySQL
 ```
@@ -96,17 +101,19 @@ mysql -u root -p
 create database people;
 use people;
 create table persons (people_id INT PRIMARY KEY, sex VARCHAR(10), bdate DATE, firstname VARCHAR(50), lastname VARCHAR(50), addresslineone VARCHAR(150), addresslinetwo VARCHAR(150), city VARCHAR(100), postalcode VARCHAR(10), ssn VARCHAR(100), id2 VARCHAR(100), email VARCHAR(150), id3 VARCHAR(150));
-LOAD DATA LOCAL INFILE '~/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/hdp22-hive-streaming/data/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 ```
 Now verify that the data was imported
 ```
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
 ```
-- Notice in HCat there is no persons table yet
-http://sandbox.hortonworks.com:8000/hcatalog/
+- Notice there is no persons table yet
+```
+hive -e 'select * from persons;'
+```
 
-- Point Sqoop to a newer version of mysql connector. This is a workaround needed for [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400)
+- Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop. See [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
 cp /usr/hdp/2.2.0.0-2041/ranger-admin/ews/webapp/WEB-INF/lib/mysql-connector-java-5.1.31.jar /usr/share/java/
 rm -f /usr/share/java/mysql-connector-java.jar
@@ -114,17 +121,16 @@ ln -s /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-conn
 ls -la /usr/share/java/my*
 ```
 
-- Import data from MySQL to Hive ORC table using Sqoop (the fetch size is part of the workaround)
+- Import data from MySQL to Hive ORC table using Sqoop 
 ```
-sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table --fetch-size -2147483648
+sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table 
 ```
+Note: if importing large files you should also add the following argument: --fetch-size -2147483648
 
 - Now notice persons table created and has data
-
-- Open the table in Hive and click view file location and then on part-m-00000
 http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
 
-- Notice the table is stored in ORC format
+- Notice the table is stored in ORC format by clicking view file location and then on part-m-00000
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/persons/part-m-00000
 
 - Compare the contents of sample_07 which is stored in text format
@@ -142,7 +148,8 @@ hive -e 'create table if not exists webtraffic (id int, val string) partitioned 
 tail -F /var/log/flume/flume-agent.log
 ```
 
-- In Ambari > Flume > Config > flume.conf enter the below and restart Flume
+- Now configure the Flume agent. 
+In Ambari > Flume > Config > flume.conf enter the below and restart Flume
 ```
 
 ## Flume NG Apache Log Collection
@@ -176,7 +183,7 @@ agent.sinks.hiveout.serializer = DELIMITED
 agent.sinks.hiveout.serializer.fieldnames =id,val
 agent.sinks.hiveout.channel = memoryChannel
 
-- After a few seconds the agent log should 
+- After a few seconds the agent log should contain the below
 ```
 02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.source.ExecSource.start:163)  - Exec source starting with command:tail -F /tmp/webtraffic.log
 02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SINK, name: hiveout: Successfully registered new MBean.
@@ -185,11 +192,11 @@ agent.sinks.hiveout.channel = memoryChannel
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SOURCE, name: webserver: Successfully registered new MBean.
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
 
-- Start tailing the webtraffic file in another terminal....
+- Start tailing the webtraffic file in another terminal
 ```
 tail -F /tmp/webtraffic.log
 ```
-- Generate 200 dummy web traffic log events in another terminal
+- Using another terminal window, generate 400 dummy web traffic log events 
 ```
 cd ~/hdp22-hive-streaming
 ./createlog.sh "/root/PII_data_small.csv" 400 >> /tmp/webtraffic.log
@@ -206,7 +213,7 @@ cd ~/hdp22-hive-streaming
 ```
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
-- Now notice test table now has records created
+- After 6-7min, notice that the webtraffic table now has records created
 http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
 
 - Notice the table is stored in ORC format
@@ -243,11 +250,7 @@ hive -e 'create table if not exists user_tweets (twitterid string, userid int, d
 hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
 ```
 
-- Pull the latest Hive streaming code
-```
-cd
-git clone https://github.com/abajwa-hw/hdp22-hive-streaming.git 
-```
+
 - Build the storm uber jar (may take 5-10min first time)
 ```
 cd /root/hdp22-hive-streaming
@@ -266,7 +269,7 @@ storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thr
 
 Note: to run in local mode, run the above without the twitter_topology argument
 
-- After seeing 10 tweets, query the table and notice it now contains tweets
+- After a few seconds, query the table and notice it now contains tweets
 ```
 hive -e 'select * from user_tweets;'
 ```
