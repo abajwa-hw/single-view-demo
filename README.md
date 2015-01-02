@@ -156,7 +156,7 @@ agent.sources.webserver.interceptors.intercepttime.type = timestamp
 ## Channels ########################################################
 agent.channels = memoryChannel
 agent.channels.memoryChannel.type = memory
-agent.channels.memoryChannel.capacity = 10000
+agent.channels.memoryChannel.capacity = 2000000
 
 
 ## Sinks ###########################################################
@@ -178,7 +178,8 @@ tail -F /tmp/webtraffic.log
 ```
 - Generate 200 dummy web traffic log events in another terminal
 ```
-./createlog.sh "/root/PII_data_small.csv" 200 >> /tmp/webtraffic.log
+cd ~/hdp22-hive-streaming
+./createlog.sh "/root/PII_data_small.csv" 400 >> /tmp/webtraffic.log
 ```
 
 - Now notice test table now has records created
@@ -262,7 +263,15 @@ hive -e 'delete from user_tweets;'
 ```
 select count(*) from persons;
 ```
-returns 999396 rows
+returns 400 rows
+
+- Correlate browsing history with PII data
+```
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
+from persons p, webtraffic w 
+where w.id = p.people_id;
+```
+Returns 400 rows
 
 - Correlate tweets with PII data
 ```
@@ -272,19 +281,13 @@ where t.userid = p.people_id;
 ```
 Returns 1360 rows
 
-- Correlate browsing history with PII data
-```
-select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
-from persons p, webtraffic w 
-where w.id = p.people_id;
-```
-Returns 118 rows
-
 - Correlate all 3
 ```
-select p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet, w.val
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet, w.val
 from persons p, user_tweets t, webtraffic w 
 where w.id = t.userid and t.userid = p.people_id
+order by p.ssn;
+
 ```
 Returns 1 row
 
