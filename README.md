@@ -137,6 +137,10 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample
 hive -e 'create table if not exists webtraffic (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");'
 ````
 
+- Start tailing the flume agent log file in one terminal...
+```
+tail -F /var/log/flume/flume-agent.log
+```
 
 - In Ambari > Flume > Config > flume.conf enter the below and restart Flume
 ```
@@ -171,8 +175,17 @@ agent.sinks.hiveout.hive.partition=%Y,%m,%d
 agent.sinks.hiveout.serializer = DELIMITED
 agent.sinks.hiveout.serializer.fieldnames =id,val
 agent.sinks.hiveout.channel = memoryChannel
+
+- After a few seconds the agent log should 
 ```
-- Start tailing the webtraffic file in one terminal....
+02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.source.ExecSource.start:163)  - Exec source starting with command:tail -F /tmp/webtraffic.log
+02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SINK, name: hiveout: Successfully registered new MBean.
+02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SINK, name: hiveout started
+02 Jan 2015 20:35:31,783 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.sink.hive.HiveSink.start:611)  - hiveout: Hive Sink hiveout started
+02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SOURCE, name: webserver: Successfully registered new MBean.
+02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
+
+- Start tailing the webtraffic file in another terminal....
 ```
 tail -F /tmp/webtraffic.log
 ```
@@ -181,7 +194,18 @@ tail -F /tmp/webtraffic.log
 cd ~/hdp22-hive-streaming
 ./createlog.sh "/root/PII_data_small.csv" 400 >> /tmp/webtraffic.log
 ```
+- The webtraffic.log should start displaying the webtraffic
+```
+581842607,http://www.google.com
+493259972,http://www.yahoo.com
+607729813,http://cnn.com
+53802950,http://www.hortonworks.com
+```
 
+-The Flume agent log should start outputting below
+```
+02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
+```
 - Now notice test table now has records created
 http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
 
