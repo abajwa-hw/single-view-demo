@@ -182,6 +182,7 @@ agent.sinks.hiveout.hive.partition=%Y,%m,%d
 agent.sinks.hiveout.serializer = DELIMITED
 agent.sinks.hiveout.serializer.fieldnames =id,val
 agent.sinks.hiveout.channel = memoryChannel
+```
 
 - After a few seconds the agent log should contain the below
 ```
