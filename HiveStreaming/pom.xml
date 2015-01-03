@@ -1,0 +1,273 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hortonworks.qe.storm</groupId>
+  <artifactId>storm-integration-test</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>storm-integration-test</name>
+  <url>http://maven.apache.org</url>
+
+
+
+           
+  <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <spring.version>2.5.6</spring.version>
+                <env.hadoopjarVersion>2.6.0.2.2.0.0-2041</env.hadoopjarVersion>
+                <env.stormjarVersion>0.9.3.2.2.0.0-2041</env.stormjarVersion>
+                <env.hivejarVersion>0.14.0.2.2.0.0-2041</env.hivejarVersion>
+                <env.kafkaVersion>0.8.1.2.2.0.0-2041</env.kafkaVersion>
+                <env.stormKafkaVersion>0.9.3.2.2.0.0-2041</env.stormKafkaVersion>
+                <env.hiveJdbcVersion>0.14.0.2.2.0.0-2041</env.hiveJdbcVersion>
+                <env.hdfsDir>/usr/hdp/current/hadoop-client/conf</env.hdfsDir>
+                <env.hdfsFile>hdfs-site.xml</env.hdfsFile>
+                <env.hdfscoreDir>/usr/hdp/current/hadoop-client/conf</env.hdfscoreDir>
+                <env.coreFile>core-site.xml</env.coreFile>                
+                <env.hivecoreDir>/usr/hdp/current/hive-client/conf</env.hivecoreDir>
+                <env.hivecoreFile>hive-site.xml</env.hivecoreFile>
+                                                      
+                <!-- <hbase.version>0.98.0.2.1.1.0-385-hadoop2</hbase.version> -->                                                                                                
+  </properties>
+
+        <repositories>
+                <repository>
+                        <id>github-releases</id>
+                        <url>http://oss.sonatype.org/content/repositories/github-releases/</url>
+                </repository>
+                <repository>
+                        <id>clojars.org</id>
+                        <url>http://clojars.org/repo</url>
+                </repository>
+
+             <repository>
+                <id>hortonworks</id>
+                <releases>
+                        <enabled>true</enabled>
+                </releases>
+                <snapshots>
+                        <enabled>true</enabled>
+                 </snapshots>
+                <url>http://54.235.92.15/nexus/content/groups/public/</url>
+             </repository>
+
+
+        </repositories>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-shade-plugin</artifactId>
+         <version>1.4</version>
+         <configuration>
+             <createDependencyReducedPom>true</createDependencyReducedPom>
+         </configuration>
+         <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+            <configuration>
+                <transformers>
+                    <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    <transformer
+                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass></mainClass>
+                    </transformer>
+                </transformers>
+                <filters>
+                  <filter>
+                    <artifact>*:*</artifact>
+                    <excludes>
+                      <exclude>META-INF/*.SF</exclude>
+                      <exclude>META-INF/*.DSA</exclude>
+                      <exclude>META-INF/*.RSA</exclude>
+                    </excludes>
+                  </filter>
+                </filters>
+            </configuration>
+          </execution>
+         </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>${env.hdfsDir}</directory>
+        <includes>
+          <include>${env.hdfsFile}</include>
+        </includes>
+       </resource>
+       <resource>
+        <directory>${env.hdfscoreDir}</directory>
+         <includes>
+           <include>${env.coreFile}</include>
+         </includes>
+       </resource>
+       <resource>
+        <directory>${env.hivecoreDir}</directory>
+         <includes>
+           <include>${env.hivecoreFile}</include>
+         </includes>
+       </resource>
+    </resources>
+  </build>
+  <dependencies>
+  
+   		<!-- <dependency>
+                	<groupId>storm-hive-tests</groupId>
+                	<artifactId>client</artifactId>
+                	<version>2.0</version>
+                	<scope>system</scope>
+                	<systemPath>/usr/hdp/2.2.0.0-2041/storm/contrib/storm-hive/storm-hive-0.9.3.2.2.0.0-2041-tests.jar</systemPath>
+        	</dependency> -->
+        	
+    <!-- <dependency>
+    	<groupId>org.apache.kafka</groupId>
+        <artifactId>kafka_2.10</artifactId>
+        <version>${env.kafkaVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>        
+    </dependency> 
+            	
+    <dependency>
+    	<groupId>org.apache.storm</groupId>
+        <artifactId>storm-kafka</artifactId>
+        <version>${env.stormKafkaVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>        
+    </dependency>      --> 	  
+  
+  
+      <dependency>
+           <groupId>org.twitter4j</groupId>
+           <artifactId>twitter4j-core</artifactId>
+           <version>[4.0,)</version>
+       </dependency>
+      <dependency>
+           <groupId>org.twitter4j</groupId>
+           <artifactId>twitter4j-stream</artifactId>
+           <version>[4.0,)</version>
+       </dependency>
+ 
+     <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-jdbc</artifactId>
+      <version>${env.hiveJdbcVersion}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+                   
+    <dependency>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-hive</artifactId>
+      <version>${env.stormjarVersion}</version>
+      <!-- <type>test-jar</type> -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-hive</artifactId>
+      <version>${env.stormjarVersion}</version>
+      <type>test-jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.storm</groupId>
+      <artifactId>storm-core</artifactId>
+      <version>${env.stormjarVersion}</version>
+      <type>jar</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+     <dependency>
+      <groupId>org.apache.hive.hcatalog</groupId>
+      <artifactId>hive-hcatalog-streaming</artifactId>
+      <version>${env.hivejarVersion}</version>
+      <type>jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-cli</artifactId>
+      <version>${env.hivejarVersion}</version>
+      <type>jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hive.hcatalog</groupId>
+      <artifactId>hive-hcatalog-core</artifactId>
+      <version>${env.hivejarVersion}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-common</artifactId>
+      <version>${env.hadoopjarVersion}</version>
+      <type>jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+</project>
