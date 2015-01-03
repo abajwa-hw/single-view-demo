@@ -129,12 +129,15 @@ Note: if importing large files you should also add the following argument: --fet
 
 - Now notice persons table created and has data
 http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
+![Image](../master/screenshots/screenshot-persons-data.png?raw=true)
 
 - Notice the table is stored in ORC format by clicking view file location and then on part-m-00000
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/persons/part-m-00000
+![Image](../master/screenshots/screenshot-persons-HDFS.png?raw=true)
 
 - Compare the contents of sample_07 which is stored in text format
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample_07/sample_07
+![Image](../master/screenshots/screenshot-sample-HDFS.png?raw=true)
 
 ##### Step 3 - Import web history data from log file to Hive ORC table via Flume 
 
@@ -217,9 +220,11 @@ cd ~/hdp22-hive-streaming
 ```
 - After 6-7min, notice that the webtraffic table now has records created
 http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
+![Image](../master/screenshots/screenshot-webtraffic-data.png?raw=true)
 
 - Notice the table is stored in ORC format
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtraffic
+![Image](../master/screenshots/screenshot-webtraffic-HDFS.png?raw=true)
 
 
 
@@ -276,10 +281,12 @@ Note: to run in local mode, run the above without the twitter_topology argument
 hive -e 'select * from user_tweets;'
 ```
 
-Note: you can configure this when declaring the HiveOptions
+![Image](../master/screenshots/screenshot-usertweets-data.png?raw=true)
 
 - Notice the table is stored in ORC format
 http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tweets
+![Image](../master/screenshots/screenshot-usertweets-HDFS.png?raw=true)
+
 
 - In case you want to empty the table for future runs, you can run below (this is only possible if transactions are turned on)
 ```
