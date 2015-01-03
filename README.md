@@ -5,7 +5,7 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 
 #### Demo overview
 
-1. Enable Hive features like transactions, queues, preemption, Tez and sessions
+1. Setup HDP 2.2 cluster and enable Hive features like transactions, queues, preemption, Tez and sessions
 2. Sqoop - import PII data of users from MySql into Hive ORC table 
 3. Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table 
 4. Storm - import tweets for those 400 users into Hive ORC table 
