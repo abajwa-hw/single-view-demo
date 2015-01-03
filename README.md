@@ -315,7 +315,7 @@ select t.userid, t.twitterid, p.firstname, p.lastname, p.sex, p.addresslineone, 
 from persons p, user_tweets t 
 where t.userid = p.people_id;
 ```
-Returns 1360 rows
+
 
 - Correlate all 3
 ```
@@ -325,5 +325,5 @@ where w.id = t.userid and t.userid = p.people_id
 order by p.ssn;
 
 ```
-Returns 1 row
+
 
