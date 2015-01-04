@@ -144,7 +144,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample
 
 - Create table test allowing transactions and partition into day month year (flume interseptor adds timestamp header to payload then specific hiveout.hive.partition)
 ````
-hive -e 'create table if not exists webtraffic (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");'
+create table if not exists webtraffic (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");
 ````
 
 - Start tailing the flume agent log file in one terminal...
@@ -254,7 +254,7 @@ hive.compactor.worker.threads > 0
 
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
-hive -e 'create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 12 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');'
+create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 12 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');
 hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
 ```
 
@@ -291,7 +291,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tw
 
 - In case you want to empty the table for future runs, you can run below (this is only possible if transactions are turned on)
 ```
-hive -e 'delete from user_tweets;'
+delete from user_tweets;
 ```
 
 ##### Step 5: Run Hive query to correlate the data from thee different sources
