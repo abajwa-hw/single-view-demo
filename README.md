@@ -111,7 +111,7 @@ exit;
 ```
 - Notice there is no persons table yet
 ```
-hive -e 'select * from persons;'
+select * from persons;
 ```
 
 - Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop. See [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
