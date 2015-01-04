@@ -308,6 +308,7 @@ select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
 from persons p, webtraffic w 
 where w.id = p.people_id;
 ```
+Notice the last field contains the browsing history:
 ![Image](../master/screenshots/screenshot-query1.png?raw=true)
 
 - Correlate tweets with PII data
@@ -316,6 +317,7 @@ select t.userid, t.twitterid, p.firstname, p.lastname, p.sex, p.addresslineone, 
 from persons p, user_tweets t 
 where t.userid = p.people_id;
 ```
+Notice the last field contains the Tweet history:
 ![Image](../master/screenshots/screenshot-query2.png?raw=true)
 
 - Correlate all 3
@@ -325,5 +327,6 @@ from persons p, user_tweets t, webtraffic w
 where w.id = t.userid and t.userid = p.people_id
 order by p.ssn;
 ```
+Notice the last 2 field contains the browsing and Tweet history:
 ![Image](../master/screenshots/screenshot-query3.png?raw=true)
 
