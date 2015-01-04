@@ -320,7 +320,7 @@ where t.userid = p.people_id;
 
 - Correlate all 3
 ```
-select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet, w.val
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val, t.tweet
 from persons p, user_tweets t, webtraffic w 
 where w.id = t.userid and t.userid = p.people_id
 order by p.ssn;
