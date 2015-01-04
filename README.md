@@ -279,7 +279,7 @@ Note: to run in local mode, run the above without the twitter_topology argument
 
 - After a few seconds, query the table and notice it now contains tweets
 ```
-hive -e 'select * from user_tweets;'
+select * from user_tweets;
 ```
 
 ![Image](../master/screenshots/screenshot-usertweets-data.png?raw=true)
