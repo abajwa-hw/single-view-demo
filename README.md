@@ -251,6 +251,7 @@ hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
 hive.compactor.initiator.on = true
 hive.compactor.worker.threads > 0 
 ```
+- Add your Twitter consumer key/secret, token/secret [here](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L40)
 
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
