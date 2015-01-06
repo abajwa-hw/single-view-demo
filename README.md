@@ -262,11 +262,13 @@ hive.compactor.worker.threads > 0
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
 create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 12 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');
-hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
+```
+- Run below
+```
+sudo -u hdfs hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
 ```
 
-
-- Build the storm uber jar (may take 5-10min first time)
+- Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
 ```
 cd /root/hdp22-hive-streaming
 mvn package
@@ -274,13 +276,17 @@ mvn package
 
 - In case your system time is not accurate, fix it to avoid errors from Twitter4J
 ```
+yum install -y ntp
 service ntpd stop
 ntpdate pool.ntp.org
 service ntpd start
 ```
 
 - Run the topology on the cluster (make sure Storm is up first and twitter_topology does not already exist)
+```
+cd /root/hdp22-hive-streaming
 storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
+```
 
 Note: to run in local mode, run the above without the twitter_topology argument
 
