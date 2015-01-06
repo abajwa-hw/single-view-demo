@@ -315,6 +315,7 @@ select * from user_tweets;
 ![Image](../master/screenshots/screenshot-usertweets-data.png?raw=true)
 
 - Notice the table is stored in ORC format
+
 http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tweets
 ![Image](../master/screenshots/screenshot-usertweets-HDFS.png?raw=true)
 
