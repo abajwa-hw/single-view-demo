@@ -33,7 +33,7 @@ hive.heapsize=1024
 hive.tez.container.size=1024
 hive.tez.java.opts=-Xmx820m
 ```
-  - Under Hive config, turn on Hive txns (only worker threads property needs to be changed in 2.2 sandbox):
+  - Under Hive config, turn on Hive txns (only worker threads property needs to be changed on 2.2 sandbox):
 ```
 hive.support.concurrency=true
 hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
@@ -44,16 +44,16 @@ hive.exec.dynamic.partition.mode=nonstrict
 ```
   - Under YARN config, increase YARN memory settings:
 ```
-yarn.nodemanager.resource.memory-mb=4096
+yarn.nodemanager.resource.memory-mb=6144
 yarn.scheduler.minimum-allocation-mb=1024
-yarn.scheduler.maximum-allocation-mb=4096
+yarn.scheduler.maximum-allocation-mb=6144
 ```
-  - Under YARN config, define queues - change these two existing properties:
+  - Under YARN config, under Capacity Scheduler, define queues - change these two existing properties:
 ```
 yarn.scheduler.capacity.root.default.capacity=50
 yarn.scheduler.capacity.root.queues=default,hiveserver	
 ```
-  - Under YARN config, define sub-queues - add below new properties:
+  - Under YARN config, under Capacity Scheduler, define sub-queues - add below new properties:
 ```
 yarn.scheduler.capacity.root.hiveserver.capacity=50
 yarn.scheduler.capacity.root.hiveserver.hive1.capacity=50
@@ -62,7 +62,7 @@ yarn.scheduler.capacity.root.hiveserver.hive2.capacity=50
 yarn.scheduler.capacity.root.hiveserver.hive2.user-limit-factor=4
 yarn.scheduler.capacity.root.hiveserver.queues=hive1,hive2
 ```
-  - Under YARN config, enable preemption:
+  - Under YARN config, under Custom yarn-site add these new properties to enable preemption:
 ```
 yarn.resourcemanager.scheduler.monitor.enable=true
 yarn.resourcemanager.scheduler.monitor.policies=org.apache.hadoop.yarn.server.resourcemanager.monitor.capacity.ProportionalCapacityPreemptionPolicy
@@ -70,7 +70,7 @@ yarn.resourcemanager.monitor.capacity.preemption.monitoring_interval=1000
 yarn.resourcemanager.monitor.capacity.preemption.max_wait_before_kill=5000
 yarn.resourcemanager.monitor.capacity.preemption.total_preemption_per_round=0.4
 ```
-  - Under Hive config, enable Tez and sessions (few of these already set in 2.2)
+  - Under Hive config, enable Tez and sessions (few of these already set in 2.2 sandbox)
 ```
 hive.execution.engine=tez
 hive.server2.tez.initialize.default.sessions=true
@@ -331,3 +331,14 @@ order by p.ssn;
 Notice the last 2 field contains the browsing and Tweet history:
 ![Image](../master/screenshots/screenshot-query3.png?raw=true)
 
+
+##### What to try next?
+
+- Enhance the sample Twitter Storm topology
+  - Import the above Storm sample into Eclipse on the sandbox VM using our *Ambari stack* using the instructions [here](https://github.com/abajwa-hw/vnc-stack) and use the Maven plugin to compile the code
+  - Update [HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets: https://github.com/abajwa-hw/hdp21-twitter-demo
+  - Add other Bolts to this basic topology to process the Tweets (e.g. rolling count) and write them to different components (like HBase, Solr etc). Here is a HDP 2.1 sample project showing a more complication topology with Tweets being generated from a Kafka producer and being emitted into local filesystem, HDFS, Hive, Solr and HBase. 
+  
+- Use Sqoop to import data into ORC tables from other databases (e.g. Oracle, MSSQL etc). See [this blog entry](http://hortonworks.com/hadoop-tutorial/import-microsoft-sql-server-hortonworks-sandbox-using-sqoop/) for more details
+
+- Change the Flume configuration to use different channels (e.g. FileChannel or Spillable Memory Channel) or write to different sinks (e.g HBase)
