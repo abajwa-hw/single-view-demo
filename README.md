@@ -131,6 +131,7 @@ sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons
 Note: if importing large files you should also add the following argument: --fetch-size -2147483648
 
 - Now notice persons table created and has data
+
 http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
 ![Image](../master/screenshots/screenshot-persons-data.png?raw=true)
 
