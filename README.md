@@ -116,6 +116,7 @@ Now verify that the data was imported
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
 ```
+
 - Notice there is no Hive table called persons yet
 
 http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
