@@ -282,14 +282,29 @@ ntpdate pool.ntp.org
 service ntpd start
 ```
 - Using Ambari, make sure Storm is started first (it is stopped by default on the sandbox) and twitter_topology does not already exist
+- Open up the Storm webui
 
-- Run the topology on the cluster.
+http://sandbox.hortonworks.com:8744/
+![Image](../master/screenshots/screenshot-storm-home.png?raw=true)
+
+- Run the topology on the cluster and notice twitter_topology appears on Storm webui
 ```
 cd /root/hdp22-hive-streaming
 storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
 ```
 
-Note: to run in local mode, run the above without the twitter_topology argument
+Note: to run in local mode (ie without submitting it to cluster), run the above without the twitter_topology argument
+
+- In Storm UI, drill down into the topology to see the details and refresh periodically. The numbers under emitted, transferred and acked should start increasing.
+![Image](../master/screenshots/screenshot-storm-topology.png?raw=true)
+
+In Storm UI, you can also click on "Show Visualization" under "Topology Visualization" to see the topology visually
+![Image](../master/screenshots/screenshot-storm-visualization.png?raw=true)
+
+- After 20-30 seconds, kill the topology from the Storm UI or using the command below to avoid overloading the VM
+```
+storm kill twitter_topology
+```
 
 - After a few seconds, query the table and notice it now contains tweets
 ```
@@ -303,10 +318,6 @@ select * from user_tweets;
 http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tweets
 ![Image](../master/screenshots/screenshot-usertweets-HDFS.png?raw=true)
 
-- Kill the topology from the Storm UI or using the command below to avoid overloading the VM
-```
-storm kill twitter_topology
-```
 
 - In case you want to empty the table for future runs, you can run below 
 ```
