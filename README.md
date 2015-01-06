@@ -112,10 +112,8 @@ Now verify that the data was imported
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
 ```
-- Notice there is no persons table yet
-```
-select * from persons;
-```
+- Notice there is no Hive table called persons 
+http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
 
 - Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
