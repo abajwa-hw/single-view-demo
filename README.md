@@ -12,6 +12,10 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 5. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/hdp22-hive-streaming#part-5-run-hive-query-to-correlate-the-data-from-thee-different-sources)
 6. [What to try next?](https://github.com/abajwa-hw/hdp22-hive-streaming#what-to-try-next)
 
+Note: the recommended way to run the SQL queries mentioned below is using Beeline client
+```
+beeline -u 'jdbc:hive2://localhost:10000'
+```
 ##### Part 1 - Start sandbox VM and enable Hive features 
 
 - Download HDP 2.2 sandbox VM image (Sandbox_HDP_2.2_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
@@ -308,7 +312,6 @@ storm kill twitter_topology
 
 - After a few seconds, query the table and notice it now contains tweets
 ```
-beeline -u 'jdbc:hive2://localhost:10000'
 select * from user_tweets;
 ```
 
