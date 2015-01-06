@@ -219,7 +219,7 @@ cd ~/hdp22-hive-streaming
 53802950,http://www.hortonworks.com
 ```
 
--The Flume agent log should start outputting below
+- The Flume agent log should start outputting below
 ```
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
