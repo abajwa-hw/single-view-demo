@@ -281,8 +281,9 @@ service ntpd stop
 ntpdate pool.ntp.org
 service ntpd start
 ```
+- Using Ambari, make sure Storm is started first (it is stopped by default on the sandbox) and twitter_topology does not already exist
 
-- Run the topology on the cluster. Make sure Storm is up first (it is stopped by default on the sandbox) and twitter_topology does not already exist
+- Run the topology on the cluster.
 ```
 cd /root/hdp22-hive-streaming
 storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
