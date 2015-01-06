@@ -301,11 +301,16 @@ select * from user_tweets;
 http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tweets
 ![Image](../master/screenshots/screenshot-usertweets-HDFS.png?raw=true)
 
+- Kill the topology from the Storm UI or using the command below to avoid overloading the VM
+```
+storm kill twitter_topology
+```
 
-- In case you want to empty the table for future runs, you can run below (this is only possible if transactions are turned on)
+- In case you want to empty the table for future runs, you can run below 
 ```
 delete from user_tweets;
 ```
+Note that such commands are only supported in 2.2 when Hive transactions are turned on)
 
 ##### Part 5: Run Hive query to correlate the data from thee different sources
 
