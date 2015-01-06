@@ -84,6 +84,8 @@ hive.vectorized.groupby.flush.percent=0.1
 
 More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
 
+More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn
+
 ##### Step 2 - Import data from MySQL to Hive ORC table via Sqoop 
 - Pull the latest Hive streaming code/scripts
 ```
