@@ -139,7 +139,7 @@ http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/persons/part-m-00000
 ![Image](../master/screenshots/screenshot-persons-HDFS.png?raw=true)
 
-- Compare the contents of sample_07 which is stored in text format
+- Compare the format of table persons against the format of sample_07 which is stored in text format
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample_07/sample_07
 ![Image](../master/screenshots/screenshot-sample-HDFS.png?raw=true)
 
