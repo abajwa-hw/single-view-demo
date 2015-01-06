@@ -5,14 +5,14 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 
 #### Demo overview
 
-1. [Setup HDP 2.2 cluster and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#step-1---start-sandbox-vm-and-enable-hive-features)
-2. [Sqoop - import PII data of 400 users from MySql into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#step-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
-3. [Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#step-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
-4. [Storm - import tweets for those users into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#step-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
-5. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/hdp22-hive-streaming#step-5-run-hive-query-to-correlate-the-data-from-thee-different-sources)
+1. [Setup HDP 2.2 cluster and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#part-1---start-sandbox-vm-and-enable-hive-features)
+2. [Sqoop - import PII data of 400 users from MySql into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
+3. [Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
+4. [Storm - import tweets for those users into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
+5. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/hdp22-hive-streaming#part-5-run-hive-query-to-correlate-the-data-from-thee-different-sources)
 6. [What to try next?](https://github.com/abajwa-hw/hdp22-hive-streaming#what-to-try-next)
 
-##### Step 1 - Start sandbox VM and enable Hive features 
+##### Part 1 - Start sandbox VM and enable Hive features 
 
 - Download HDP 2.2 sandbox VM image (Sandbox_HDP_2.2_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
 - Import Sandbox_HDP_2.2_VMware.ova into VMWare and set the VM memory size to 8GB
@@ -86,7 +86,7 @@ More details on Hive streaming ingest can be found here: https://cwiki.apache.or
 
 More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn
 
-##### Step 2 - Import data from MySQL to Hive ORC table via Sqoop 
+##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 - Pull the latest Hive streaming code/scripts
 ```
 cd
@@ -144,7 +144,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/person
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample_07/sample_07
 ![Image](../master/screenshots/screenshot-sample-HDFS.png?raw=true)
 
-##### Step 3 - Import web history data from log file to Hive ORC table via Flume 
+##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
 - Create table test allowing transactions and partition into day month year (flume interseptor adds timestamp header to payload then specific hiveout.hive.partition)
 ````
@@ -235,7 +235,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtra
 
 
 
-##### Step 4: Import tweets for users into Hive ORC table via Storm
+##### Part 4: Import tweets for users into Hive ORC table via Storm
 
 - Install mvn under /usr/share/maven
 ```
@@ -301,7 +301,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tw
 delete from user_tweets;
 ```
 
-##### Step 5: Run Hive query to correlate the data from thee different sources
+##### Part 5: Run Hive query to correlate the data from thee different sources
 
 - Check size of PII table
 ```
