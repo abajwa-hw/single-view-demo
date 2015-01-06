@@ -206,10 +206,10 @@ agent.sinks.hiveout.channel = memoryChannel
 ```
 tail -F /tmp/webtraffic.log
 ```
-- Using another terminal window, generate 400 dummy web traffic log events 
+- Using another terminal window, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
 cd ~/hdp22-hive-streaming
-./createlog.sh "/root/PII_data_small.csv" 400 >> /tmp/webtraffic.log
+./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
 ```
 - The webtraffic.log should start displaying the webtraffic
 ```
@@ -223,11 +223,12 @@ cd ~/hdp22-hive-streaming
 ```
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
-- After 6-7min, notice that the webtraffic table now has records created
+- After 6-7min, notice that the script has completed and the webtraffic table now has records created
 http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
 ![Image](../master/screenshots/screenshot-webtraffic-data.png?raw=true)
 
 - Notice the table is stored in ORC format
+
 http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtraffic
 ![Image](../master/screenshots/screenshot-webtraffic-HDFS.png?raw=true)
 
