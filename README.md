@@ -151,9 +151,13 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample
 
 ##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
-- Create table test allowing transactions and partition into day month year (flume interseptor adds timestamp header to payload then specific hiveout.hive.partition)
+- Create table webtraffic to store the userid and web url enabling transactions and partition into day month year 
 ````
-create table if not exists webtraffic (id int, val string) partitioned by (year string,month string,day string) clustered by (id) into 32 buckets stored as orc TBLPROPERTIES ("transactional"="true");
+create table if not exists webtraffic (id int, val string) 
+partitioned by (year string,month string,day string) 
+clustered by (id) into 32 buckets 
+stored as orc 
+TBLPROPERTIES ("transactional"="true");
 ````
 
 - Start tailing the flume agent log file in one terminal...
@@ -161,8 +165,12 @@ create table if not exists webtraffic (id int, val string) partitioned by (year 
 tail -F /var/log/flume/flume-agent.log
 ```
 
-- Now configure the Flume agent. 
-In Ambari > Flume > Config > flume.conf enter the below and restart Flume
+- Now lets configure the Flume agent. High level:
+  - The *source* will be of type exec that tails our weblog file using a timestamp intersept (i.e. flume interseptor adds timestamp header to the payload)
+  - The *channel* will be a memory channel which is ideal for flows that need higher throughput but could lose the data in the event of agent failures
+  - The *sink* will be of type Hive that writes userid and url to default.webtraffic table partitioned by year, month, day
+  - More details about each type of source, channel, sink are available [here](http://flume.apache.org/FlumeUserGuide.html) 
+- In Ambari > Flume > Config > flume.conf enter the below and restart Flume
 ```
 
 ## Flume NG Apache Log Collection
