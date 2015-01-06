@@ -224,6 +224,7 @@ cd ~/hdp22-hive-streaming
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
 - After 6-7min, notice that the script has completed and the webtraffic table now has records created
+
 http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
 ![Image](../master/screenshots/screenshot-webtraffic-data.png?raw=true)
 
