@@ -293,6 +293,7 @@ Note: to run in local mode, run the above without the twitter_topology argument
 
 - After a few seconds, query the table and notice it now contains tweets
 ```
+beeline -u 'jdbc:hive2://localhost:10000'
 select * from user_tweets;
 ```
 
@@ -311,7 +312,7 @@ storm kill twitter_topology
 ```
 delete from user_tweets;
 ```
-Note that such commands are only supported in 2.2 when Hive transactions are turned on)
+Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
 ##### Part 5: Run Hive query to correlate the data from thee different sources
 
