@@ -329,7 +329,7 @@ select * from user_tweets;
 ```
 'ascii' codec can't decode byte 0xf0 in position 62: ordinal not in range(128)
 ```
-  - To workaround replace ```default_filters=['unicode', 'escape'],``` with ```default_filters=['decode.utf8', 'unicode', 'escape'],``` in ```/usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py```
+  - To workaround replace ```default_filters=['unicode', 'escape'],``` with ```default_filters=['decode.utf8', 'unicode', 'escape'],``` in /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
 ```
 cp  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py.orig
 sed -i "s/default_filters=\['unicode', 'escape'\],/default_filters=\['decode.utf8', 'unicode', 'escape'\],/g" /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
