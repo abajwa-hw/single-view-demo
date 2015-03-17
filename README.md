@@ -326,9 +326,9 @@ select * from user_tweets;
 ![Image](../master/screenshots/screenshot-usertweets-data.png?raw=true)
 
   - You may encounter the below error through Hue when browsing this table. This is because in this version, Hue beeswax does not support UTF-8 and there were such characters present in the tweets
-  ```
-  'ascii' codec can't decode byte 0xf0 in position 62: ordinal not in range(128)
-  ```
+```
+'ascii' codec can't decode byte 0xf0 in position 62: ordinal not in range(128)
+```
   - To workaround replace ```['unicode', 'escape'],``` with ```['decode.utf8', 'unicode', 'escape'],``` in ```/usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py```
   ```
   cp  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py.orig
