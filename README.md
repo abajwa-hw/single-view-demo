@@ -34,9 +34,9 @@ After bringing up Ambari, make the below config changes to Hive and YARN and res
 
   - Under Hive config, increase memory settings: 
 ```
-hive.heapsize=1024 
-hive.tez.container.size=1024
-hive.tez.java.opts=-Xmx820m
+hive.heapsize=512
+hive.tez.container.size=512
+hive.tez.java.opts=-Xmx410m
 ```
   - Under Hive config, turn on Hive txns (only worker threads property needs to be changed on 2.2 sandbox):
 ```
@@ -49,9 +49,9 @@ hive.exec.dynamic.partition.mode=nonstrict
 ```
   - Under YARN config, increase YARN memory settings:
 ```
-yarn.nodemanager.resource.memory-mb=6144
-yarn.scheduler.minimum-allocation-mb=1024
-yarn.scheduler.maximum-allocation-mb=6144
+yarn.nodemanager.resource.memory-mb=4096
+yarn.scheduler.minimum-allocation-mb=512
+yarn.scheduler.maximum-allocation-mb=4096
 ```
   - Under YARN config, under Capacity Scheduler, define queues - change these two existing properties:
 ```
@@ -154,7 +154,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample
 ````
 create table if not exists webtraffic (id int, val string) 
 partitioned by (year string,month string,day string) 
-clustered by (id) into 32 buckets 
+clustered by (id) into 7 buckets 
 stored as orc 
 TBLPROPERTIES ("transactional"="true");
 ````
@@ -273,7 +273,7 @@ hive.compactor.worker.threads > 0
 
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
-create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 12 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');
+create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 7 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');
 ```
 - Run below
 ```
@@ -347,7 +347,24 @@ delete from user_tweets;
 ```
 Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
-##### Part 5: Run Hive query to correlate the data from thee different sources
+##### Part 5: Analyze table to populate statistics
+
+- Run table statistics
+```
+analyze table persons compute statistics;
+analyze table user_Tweets compute statistics;
+analyze table webtraffic partition(year,month,day) compute statistics;
+```
+
+- Run column statistics
+```
+analyze table persons compute statistics for columns;
+analyze table user_Tweets compute statistics for columns;
+analyze table webtraffic partition(year,month,day) compute statistics for columns;
+```
+
+
+##### Part 6: Run Hive query to correlate the data from thee different sources
 
 - Check size of PII table
 ```
