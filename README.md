@@ -119,7 +119,9 @@ exit;
 
 - Notice there is no Hive table called persons yet
 
-http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
+Hue: http://sandbox.hortonworks.com:8000/beeswax/tables/
+
+Ambari View for Hive: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/0.2.0/MyHive
 
 - Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
