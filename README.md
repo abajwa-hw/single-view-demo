@@ -161,11 +161,6 @@ stored as orc
 TBLPROPERTIES ("transactional"="true");
 ````
 
-- Start tailing the flume agent log file in one terminal...
-```
-tail -F /var/log/flume/flume-agent.log
-```
-
 - Now lets configure the Flume agent. High level:
   - The *source* will be of type exec that tails our weblog file using a timestamp intersept (i.e. flume interseptor adds timestamp header to the payload)
   - The *channel* will be a memory channel which is ideal for flows that need higher throughput but could lose the data in the event of agent failures
@@ -206,6 +201,11 @@ agent.sinks.hiveout.serializer.fieldnames =id,val
 agent.sinks.hiveout.channel = memoryChannel
 ```
 
+- Start tailing the flume agent log file in one terminal...
+```
+tail -F /var/log/flume/flume-agent.log
+```
+
 - After a few seconds the agent log should contain the below
 ```
 02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.source.ExecSource.start:163)  - Exec source starting with command:tail -F /tmp/webtraffic.log
@@ -216,14 +216,14 @@ agent.sinks.hiveout.channel = memoryChannel
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
 ```
 
-- Start tailing the webtraffic file in another terminal
-```
-tail -F /tmp/webtraffic.log
-```
 - Using another terminal window, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
 cd ~/hdp22-hive-streaming
 ./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
+```
+- Start tailing the webtraffic file in another terminal
+```
+tail -F /tmp/webtraffic.log
 ```
 - The webtraffic.log should start displaying the webtraffic
 ```
