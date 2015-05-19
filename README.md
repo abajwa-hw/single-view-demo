@@ -251,19 +251,10 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtra
 
 ##### Part 4: Import tweets for users into Hive ORC table via Storm
 
-- Install mvn under /usr/share/maven
+- Install maven from epel (*or [as an Ambari Service](https://github.com/randerzander/maven-service) or [manually](https://gist.github.com/seanorama/532caf72797a31f1a856)*)
 ```
-mkdir /usr/share/maven
-cd /usr/share/maven
-wget http://mirrors.koehn.com/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
-tar xvzf apache-maven-3.2.5-bin.tar.gz
-ln -s /usr/share/maven/apache-maven-3.2.5/ /usr/share/maven/latest
-echo 'M2_HOME=/usr/share/maven/latest' >> ~/.bashrc
-echo 'M2=$M2_HOME/bin' >> ~/.bashrc
-echo 'PATH=$PATH:$M2' >> ~/.bashrc
-export M2_HOME=/usr/share/maven/latest
-export M2=$M2_HOME/bin
-export PATH=$PATH:$M2
+curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
+yum -y install apache-maven
 ```
 - Make hive config changes to enable transactions, if not already done above
 ```
