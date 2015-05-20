@@ -184,8 +184,8 @@ agent.sources.webserver.interceptors.intercepttime.type = timestamp
 ## Channels ########################################################
 agent.channels = memoryChannel
 agent.channels.memoryChannel.type = memory
-agent.channels.memoryChannel.capacity = 2000000
-
+agent.channels.memoryChannel.capacity = 1000
+agent.channels.memoryChannel.transactionCapacity = 1000
 
 ## Sinks ###########################################################
 
