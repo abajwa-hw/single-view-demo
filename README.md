@@ -48,6 +48,16 @@ hive.compactor.worker.threads=2
 hive.enforce.bucketing=true
 hive.exec.dynamic.partition.mode=nonstrict
 ```
+  - Under Hive config, enable Tez and sessions (few of these already set in 2.2 sandbox)
+```
+hive.execution.engine=tez
+hive.server2.tez.initialize.default.sessions=true
+hive.server2.tez.default.queues=hive1,hive2
+hive.server2.tez.sessions.per.default.queue=1
+hive.server2.enable.doAs=false
+hive.vectorized.groupby.maxentries=10240
+hive.vectorized.groupby.flush.percent=0.1
+```
   - Under YARN config, increase YARN memory settings:
 ```
 yarn.nodemanager.resource.memory-mb=4096
@@ -75,16 +85,6 @@ yarn.resourcemanager.scheduler.monitor.policies=org.apache.hadoop.yarn.server.re
 yarn.resourcemanager.monitor.capacity.preemption.monitoring_interval=1000
 yarn.resourcemanager.monitor.capacity.preemption.max_wait_before_kill=5000
 yarn.resourcemanager.monitor.capacity.preemption.total_preemption_per_round=0.4
-```
-  - Under Hive config, enable Tez and sessions (few of these already set in 2.2 sandbox)
-```
-hive.execution.engine=tez
-hive.server2.tez.initialize.default.sessions=true
-hive.server2.tez.default.queues=hive1,hive2
-hive.server2.tez.sessions.per.default.queue=1
-hive.server2.enable.doAs=false
-hive.vectorized.groupby.maxentries=10240
-hive.vectorized.groupby.flush.percent=0.1
 ```
 
 More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
