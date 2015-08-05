@@ -45,7 +45,7 @@ ssh root@sandbox.hortonworks.com
 
   
 - In Ambari, make the below compactor/interactive query config changes to Hive config and restart Hive
-![Image](../master/screenshots/yarn-config-compactor.png?raw=true)
+![Image](../master/screenshots/hive-config-compactor.png?raw=true)
 ![Image](../master/screenshots/hive-config-interactivequery.png?raw=true)
 
   - you can also search for the properties using its full name:
