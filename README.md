@@ -295,10 +295,6 @@ storm kill twitter_topology
 ```
 
 - After a few seconds, navigate to Hive view and query the user_tweets table and notice it now contains tweets
-```
-select * from user_tweets;
-```
-
 ![Image](../master/screenshots/screenshot-hiveview-usertweets.png?raw=true)
 
   - You may encounter the below error through Hue when browsing this table. This is because in this version, Hue beeswax does not support UTF-8 and there were such characters present in the tweets
