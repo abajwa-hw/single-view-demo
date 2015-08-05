@@ -15,10 +15,7 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 6. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/hdp22-hive-streaming#part-6-run-hive-query-to-correlate-the-data-from-thee-different-sources)
 7. [What to try next?](https://github.com/abajwa-hw/hdp22-hive-streaming#what-to-try-next)
 
-Note: the recommended way to run the SQL queries mentioned below is using Beeline client
-```
-beeline -u 'jdbc:hive2://localhost:10000'
-```
+
 ##### Part 1 - Start sandbox VM and enable Hive features 
 
 - Download HDP 2.3 sandbox VM image (Sandbox_HDP_2.3_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
