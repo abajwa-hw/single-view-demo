@@ -52,6 +52,8 @@ More details on Hive streaming ingest can be found here: https://cwiki.apache.or
 
 More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn/#hive
 
+----------------
+
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 
 - Pull the latest Hive streaming code/scripts
@@ -115,6 +117,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
 ![Image](../master/screenshots/screenshot-filesview-sample-HDFS-text.png?raw=true)
 
+-------------------
 
 ##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
@@ -221,6 +224,7 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtra
 - Notice the table is stored in ORC format
 ![Image](../master/screenshots/screenshot-view-webtraffic-HDFS-ORC.png?raw=true)
 
+------------------------
 
 ##### Part 4: Import tweets for users into Hive ORC table via Storm
 
@@ -321,6 +325,8 @@ delete from user_tweets;
 ```
 Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
+----------------
+
 ##### Part 5: Analyze table to populate Hive statistics
 
 - Run Hive table statistics
@@ -337,6 +343,7 @@ analyze table user_Tweets compute statistics for columns;
 analyze table webtraffic partition(year,month,day) compute statistics for columns;
 ```
 
+------------------
 
 ##### Part 6: Run Hive query to correlate the data from thee different sources
 
@@ -382,6 +389,7 @@ Notice the last 2 field contains the browsing and Tweet history:
 - Also notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
 ![Image](../master/screenshots/hive-tezgraph.png?raw=true)
 
+-----------------------
 
 ##### What to try next?
 
