@@ -1,13 +1,11 @@
 ## Hive streaming workshop
 This demo is part of a 'Interactive Query with Apache Hive' webinar.
 
-The webinar recording and slides are available at http://hortonworks.com/partners/learn/#hive
-
-Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/README-22.md)
+The webinar recording and slides are available at http://hortonworks.com/partners/learn
 
 #### Demo overview
 
-1. [Start HDP 2.3 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#part-1---start-sandbox-vm-and-enable-hive-features)
+1. [Start HDP 2.2 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#part-1---start-sandbox-vm-and-enable-hive-features)
 2. [Sqoop - import PII data of users from MySql into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
 3. [Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
 4. [Storm - import tweets for those users into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
@@ -21,41 +19,79 @@ beeline -u 'jdbc:hive2://localhost:10000'
 ```
 ##### Part 1 - Start sandbox VM and enable Hive features 
 
-- Download HDP 2.3 sandbox VM image (Sandbox_HDP_2.3_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
-- Import Sandbox_HDP_2.3_VMware.ova into VMWare and set the VM memory size to 8GB
+- Download HDP 2.2 sandbox VM image (Sandbox_HDP_2.2_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
+- Import Sandbox_HDP_2.2_VMware.ova into VMWare and set the VM memory size to 8GB
 - Now start the VM
 - After it boots up, find the IP address of the VM and add an entry into your machines hosts file e.g.
 ```
 192.168.191.241 sandbox.hortonworks.com sandbox    
 ```
-- Connect to the VM via SSH (password hadoop)
+- Connect to the VM via SSH (password hadoop) and start Ambari server
 ```
 ssh root@sandbox.hortonworks.com
+/root/start_ambari.sh
 ```
+After bringing up Ambari, make the below config changes to Hive and YARN and restart these components
 
-- Open YARN Queue Manager view http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE and setup queues:
-  - allocate half the capacity of the cluster to hive (with other half going to default)
-  - subdivide the hive queue into 2 queues: hive1 and hive2
-  - on each subqueue, set user-limit-factor=4
-  - Save and restart
-
-![Image](../master/screenshots/screenshot-capacity-scheduler-view.png?raw=true)
-
-- In Ambari, make the below config changes to YARN config and restart YARN
-  - yarn.resourcemanager.scheduler.monitor.enable=true
-  
-- In Ambari, make the below config changes to Hive config and restart Hive
-  - hive.compactor.initiator.on=true
-  - hive.compactor.worker.threads = 2
-  - hive.server2.tez.initialize.default.sessions = true
-  - hive.server2.tez.default.queues=hiveserver.hive1,hiveserver.hive2
+  - Under Hive config, increase memory settings: 
+```
+hive.heapsize=512
+hive.tez.container.size=512
+hive.tez.java.opts=-Xmx410m
+```
+  - Under Hive config, turn on Hive txns (only worker threads property needs to be changed on 2.2 sandbox):
+```
+hive.support.concurrency=true
+hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
+hive.compactor.initiator.on=true
+hive.compactor.worker.threads=2
+hive.enforce.bucketing=true
+hive.exec.dynamic.partition.mode=nonstrict
+```
+  - Under Hive config, enable Tez and sessions (few of these already set in 2.2 sandbox)
+```
+hive.execution.engine=tez
+hive.server2.tez.initialize.default.sessions=true
+hive.server2.tez.default.queues=hive1,hive2
+hive.server2.tez.sessions.per.default.queue=1
+hive.server2.enable.doAs=false
+hive.vectorized.groupby.maxentries=10240
+hive.vectorized.groupby.flush.percent=0.1
+```
+  - Under YARN config, increase YARN memory settings:
+```
+yarn.nodemanager.resource.memory-mb=4096
+yarn.scheduler.minimum-allocation-mb=512
+yarn.scheduler.maximum-allocation-mb=4096
+```
+  - Under YARN config, under Capacity Scheduler, define queues - change these two existing properties:
+```
+yarn.scheduler.capacity.root.default.capacity=50
+yarn.scheduler.capacity.root.queues=default,hiveserver	
+```
+  - Under YARN config, under Capacity Scheduler, define sub-queues - add below new properties:
+```
+yarn.scheduler.capacity.root.hiveserver.capacity=50
+yarn.scheduler.capacity.root.hiveserver.hive1.capacity=50
+yarn.scheduler.capacity.root.hiveserver.hive1.user-limit-factor=4
+yarn.scheduler.capacity.root.hiveserver.hive2.capacity=50
+yarn.scheduler.capacity.root.hiveserver.hive2.user-limit-factor=4
+yarn.scheduler.capacity.root.hiveserver.queues=hive1,hive2
+```
+  - Under YARN config, under Custom yarn-site add these new properties to enable preemption:
+```
+yarn.resourcemanager.scheduler.monitor.enable=true
+yarn.resourcemanager.scheduler.monitor.policies=org.apache.hadoop.yarn.server.resourcemanager.monitor.capacity.ProportionalCapacityPreemptionPolicy
+yarn.resourcemanager.monitor.capacity.preemption.monitoring_interval=1000
+yarn.resourcemanager.monitor.capacity.preemption.max_wait_before_kill=5000
+yarn.resourcemanager.monitor.capacity.preemption.total_preemption_per_round=0.4
+```
 
 More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
 
-More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn/#hive
+More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn
 
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
-
 - Pull the latest Hive streaming code/scripts
 ```
 cd
@@ -81,9 +117,11 @@ select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
 ```
 
-- Using the Ambari view for Hive, notice there is no Hive table called persons yet
+- Notice there is no Hive table called persons yet
 
-http://sandbox.hortonworks.com:8080/#/main/views/HIVE/0.1.0/MyHive
+Hue: http://sandbox.hortonworks.com:8000/beeswax/tables/
+
+Ambari View for Hive: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/0.2.0/MyHive
 
 - Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
@@ -98,30 +136,23 @@ sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons
 ```
 Note: if importing large files you should also add the following argument: --fetch-size -2147483648
 
-- Now re-open the Hive view and notice that the persons table was created and has data
+- Now notice persons table created and has data
 
-http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+http://sandbox.hortonworks.com:8000/beeswax/table/default/persons
+![Image](../master/screenshots/screenshot-persons-data.png?raw=true)
 
-![Image](../master/screenshots/screenshot-hiveview-persons-data.png?raw=true)
+- Notice the table is stored in ORC format by clicking view file location and then on part-m-00000
+http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/persons/part-m-00000
+![Image](../master/screenshots/screenshot-persons-HDFS.png?raw=true)
 
-- Notice the table is stored in ORC format by opening the underlying HDFS file in the HDFS files view and then on part-m-00000: /apps/hive/warehouse/persons/part-m-00000
+- Compare the format of table persons against the format of sample_07 which is stored in text format
 
-http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
-
-![Image](../master/screenshots/screenshot-filesview-persons-HDFS.png?raw=true)
-![Image](../master/screenshots/screenshot-hiveview-persons-data-ORC.png?raw=true)
-
-- Compare the format of table persons against the format of sample_07 which is stored in text format: /apps/hive/warehouse/sample_07/sample_07
-
-![Image](../master/screenshots/screenshot-filesview-sample-HDFS.png?raw=true)
-
-![Image](../master/screenshots/screenshot-filesview-sample-HDFS-text.png?raw=true)
-
+http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/sample_07/sample_07
+![Image](../master/screenshots/screenshot-sample-HDFS.png?raw=true)
 
 ##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
-- Use Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
- 
+- Create table webtraffic to store the userid and web url enabling transactions and partition into day month year 
 ````
 create table if not exists webtraffic (id int, val string) 
 partitioned by (year string,month string,day string) 
@@ -130,15 +161,12 @@ stored as orc
 TBLPROPERTIES ("transactional"="true");
 ````
 
-![Image](../master/screenshots/create-webtraffic-table.png?raw=true)
-
 - Now lets configure the Flume agent. High level:
   - The *source* will be of type exec that tails our weblog file using a timestamp intersept (i.e. flume interseptor adds timestamp header to the payload)
   - The *channel* will be a memory channel which is ideal for flows that need higher throughput but could lose the data in the event of agent failures
   - The *sink* will be of type Hive that writes userid and url to default.webtraffic table partitioned by year, month, day
   - More details about each type of source, channel, sink are available [here](http://flume.apache.org/FlumeUserGuide.html) 
-- In Ambari > Flume > Service Actions > Turn off maintenance mode  
-- In Ambari > Flume > Configs > flume.conf enter the below, Save and restart Flume
+- In Ambari > Flume > Config > flume.conf enter the below and restart Flume
 ```
 
 ## Flume NG Apache Log Collection
@@ -211,17 +239,14 @@ tail -F /tmp/webtraffic.log
 ```
 - After 6-7min, notice that the script has completed and the webtraffic table now has records created
 
-http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
-
-![Image](../master/screenshots/screenshot-view-webtraffic-data.png?raw=true)
-
-- Open Files view and navigate to /apps/hive/warehouse/webtraffic/year=xxxx/month=xx/day=xx/delta_0000001_0000100 and view the files
-
-http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtraffic
-![Image](../master/screenshots/screenshot-view-webtraffic-HDFS.png?raw=true)
+http://sandbox.hortonworks.com:8000/beeswax/table/default/webtraffic
+![Image](../master/screenshots/screenshot-webtraffic-data.png?raw=true)
 
 - Notice the table is stored in ORC format
-![Image](../master/screenshots/screenshot-view-webtraffic-HDFS-ORC.png?raw=true)
+
+http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtraffic
+![Image](../master/screenshots/screenshot-webtraffic-HDFS.png?raw=true)
+
 
 
 ##### Part 4: Import tweets for users into Hive ORC table via Storm
@@ -243,9 +268,6 @@ hive.compactor.worker.threads > 0
 ```
 create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 7 buckets stored as orc tblproperties("orc.compress"="NONE",'transactional'='true');
 ```
-![Image](../master/screenshots/create-usertweets-table.png?raw=true)
-
-
 - Run below
 ```
 sudo -u hdfs hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
@@ -264,11 +286,10 @@ service ntpd stop
 ntpdate pool.ntp.org
 service ntpd start
 ```
-- Using Ambari, make sure Storm has maintenance mode turned off and is started  (it is stopped by default on the sandbox) and twitter_topology does not already exist
-- Open up the Storm webview or Storm webui
-  - http://sandbox.hortonworks.com:8080/#/main/views/Storm_Monitoring/0.1.0/Storm
-  - http://sandbox.hortonworks.com:8744/
-  
+- Using Ambari, make sure Storm is started first (it is stopped by default on the sandbox) and twitter_topology does not already exist
+- Open up the Storm webui
+
+http://sandbox.hortonworks.com:8744/
 ![Image](../master/screenshots/screenshot-storm-home.png?raw=true)
 
 - Run the topology on the cluster and notice twitter_topology appears on Storm webui
@@ -279,25 +300,23 @@ storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thr
 
 Note: to run in local mode (ie without submitting it to cluster), run the above without the twitter_topology argument
 
-- In Storm view or UI, drill down into the topology to see the details and refresh periodically. The numbers under emitted, transferred and acked should start increasing.
+- In Storm UI, drill down into the topology to see the details and refresh periodically. The numbers under emitted, transferred and acked should start increasing.
 ![Image](../master/screenshots/screenshot-storm-topology.png?raw=true)
 
-In Storm view or UI, you can also click on "Show Visualization" under "Topology Visualization" to see the topology visually
+In Storm UI, you can also click on "Show Visualization" under "Topology Visualization" to see the topology visually
 ![Image](../master/screenshots/screenshot-storm-visualization.png?raw=true)
-
-![Image](../master/screenshots/storm-view-twittertopology.png?raw=true)
 
 - After 20-30 seconds, kill the topology from the Storm UI or using the command below to avoid overloading the VM
 ```
 storm kill twitter_topology
 ```
 
-- After a few seconds, navigate to Hive view and query the user_tweets table and notice it now contains tweets
+- After a few seconds, query the table and notice it now contains tweets
 ```
 select * from user_tweets;
 ```
 
-![Image](../master/screenshots/screenshot-hiveview-usertweets.png?raw=true)
+![Image](../master/screenshots/screenshot-usertweets-data.png?raw=true)
 
   - You may encounter the below error through Hue when browsing this table. This is because in this version, Hue beeswax does not support UTF-8 and there were such characters present in the tweets
 ```
@@ -309,13 +328,11 @@ cp  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py  /usr/lib/hue/deskt
 sed -i "s/default_filters=\['unicode', 'escape'\],/default_filters=\['decode.utf8', 'unicode', 'escape'\],/g" /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
 ```
 
-- Open Files view and navigate to /apps/hive/warehouse/user_tweets: http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
-
-![Image](../master/screenshots/screenshot-filesview-usertweets-HDFS.png?raw=true)
-
 - Notice the table is stored in ORC format
 
-![Image](../master/screenshots/screenshot-filesview-usertweets-HDFS-ORC.png?raw=true)
+http://sandbox.hortonworks.com:8000/filebrowser/view/apps/hive/warehouse/user_tweets
+![Image](../master/screenshots/screenshot-usertweets-HDFS.png?raw=true)
+
 
 - In case you want to empty the table for future runs, you can run below 
 ```
@@ -323,16 +340,16 @@ delete from user_tweets;
 ```
 Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
-##### Part 5: Analyze table to populate Hive statistics
+##### Part 5: Analyze table to populate statistics
 
-- Run Hive table statistics
+- Run table statistics
 ```
 analyze table persons compute statistics;
 analyze table user_Tweets compute statistics;
 analyze table webtraffic partition(year,month,day) compute statistics;
 ```
 
-- Run Hive column statistics
+- Run column statistics
 ```
 analyze table persons compute statistics for columns;
 analyze table user_Tweets compute statistics for columns;
@@ -341,8 +358,6 @@ analyze table webtraffic partition(year,month,day) compute statistics for column
 
 
 ##### Part 6: Run Hive query to correlate the data from thee different sources
-
-- Using the Hive view http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive :
 
 - Check size of PII table
 ```
@@ -357,7 +372,7 @@ from persons p, webtraffic w
 where w.id = p.people_id;
 ```
 Notice the last field contains the browsing history:
-![Image](../master/screenshots/screenshot-hiveview-query1.png?raw=true)
+![Image](../master/screenshots/screenshot-query1.png?raw=true)
 
 - Correlate tweets with PII data
 ```
@@ -366,7 +381,7 @@ from persons p, user_tweets t
 where t.userid = p.people_id;
 ```
 Notice the last field contains the Tweet history:
-![Image](../master/screenshots/screenshot-hiveview-query2.png?raw=true)
+![Image](../master/screenshots/screenshot-query2.png?raw=true)
 
 - Correlate all 3
 ```
@@ -376,13 +391,7 @@ where w.id = t.userid and t.userid = p.people_id
 order by p.ssn;
 ```
 Notice the last 2 field contains the browsing and Tweet history:
-![Image](../master/screenshots/screenshot-hiveview-query3.png?raw=true)
-
-- Notice that for these queries Hive view provides the option to view Visual Explain of the query for performance tuning.
-![Image](../master/screenshots/hive-visualexplain.png?raw=true)
-
-- Also notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
-![Image](../master/screenshots/hive-tezgraph.png?raw=true)
+![Image](../master/screenshots/screenshot-query3.png?raw=true)
 
 
 ##### What to try next?
