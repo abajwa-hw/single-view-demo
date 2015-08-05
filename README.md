@@ -92,7 +92,7 @@ ln -sf /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-con
 ls -la /usr/share/java/my*
 ```
 
-- Import data from MySQL to Hive ORC table using Sqoop 
+- Import data from MySQL to Hive ORC table using Sqoop. From the terminal shell run:
 ```
 sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table 
 ```
