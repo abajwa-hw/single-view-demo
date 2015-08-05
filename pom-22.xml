@@ -16,16 +16,16 @@
   <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <spring.version>2.5.6</spring.version>
-                <env.hadoopjarVersion>2.7.1.2.3.0.0-2557</env.hadoopjarVersion>
-                <env.stormjarVersion>0.10.0.2.3.0.0-2557</env.stormjarVersion>
-                <env.hivejarVersion>1.2.1.2.3.0.0-2557</env.hivejarVersion>
-                <env.kafkaVersion>0.8.2.2.3.0.0-2557</env.kafkaVersion>
-                <env.stormKafkaVersion>0.10.0.2.3.0.0-2557</env.stormKafkaVersion>
-                <env.hiveJdbcVersion>1.2.1.2.3.0.0-2557</env.hiveJdbcVersion>
+                <env.hadoopjarVersion>2.6.0.2.2.0.0-2041</env.hadoopjarVersion>
+                <env.stormjarVersion>0.9.3.2.2.0.0-2041</env.stormjarVersion>
+                <env.hivejarVersion>0.14.0.2.2.0.0-2041</env.hivejarVersion>
+                <env.kafkaVersion>0.8.1.2.2.0.0-2041</env.kafkaVersion>
+                <env.stormKafkaVersion>0.9.3.2.2.0.0-2041</env.stormKafkaVersion>
+                <env.hiveJdbcVersion>0.14.0.2.2.0.0-2041</env.hiveJdbcVersion>
                 <env.hdfsDir>/usr/hdp/current/hadoop-client/conf</env.hdfsDir>
                 <env.hdfsFile>hdfs-site.xml</env.hdfsFile>
                 <env.hdfscoreDir>/usr/hdp/current/hadoop-client/conf</env.hdfscoreDir>
-                <env.coreFile>core-site.xml</env.coreFile>
+                <env.coreFile>core-site.xml</env.coreFile>                
                 <env.hivecoreDir>/usr/hdp/current/hive-client/conf</env.hivecoreDir>
                 <env.hivecoreFile>hive-site.xml</env.hivecoreFile>
                                                       
