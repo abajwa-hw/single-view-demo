@@ -39,7 +39,8 @@ ssh root@sandbox.hortonworks.com
 
 ![Image](../master/screenshots/screenshot-capacity-scheduler-view.png?raw=true)
 
-- In Ambari, under YARN config: make the below pre-emption config changes, Save and restart YARN
+- In Ambari, under YARN config: make the below pre-emption config changes,Save and restart YARN
+
 ![Image](../master/screenshots/yarn-config-preemption.png?raw=true)
   - you can also search for the property using its full name: yarn.resourcemanager.scheduler.monitor.enable=true
 
