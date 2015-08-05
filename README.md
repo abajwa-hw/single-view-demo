@@ -42,6 +42,7 @@ ssh root@sandbox.hortonworks.com
 - In Ambari, under YARN config: make the below pre-emption config changes,Save and restart YARN
 
 ![Image](../master/screenshots/yarn-config-preemption.png?raw=true)
+
   - you can also search for the property using its full name: yarn.resourcemanager.scheduler.monitor.enable=true
 
   
