@@ -39,12 +39,12 @@ ssh root@sandbox.hortonworks.com
 
 ![Image](../master/screenshots/screenshot-capacity-scheduler-view.png?raw=true)
 
-- In Ambari, make the below pre-emption config changes to YARN config, Save and restart YARN
+- In Ambari, under YARN config: make the below pre-emption config changes, Save and restart YARN
 ![Image](../master/screenshots/yarn-config-preemption.png?raw=true)
   - you can also search for the property using its full name: yarn.resourcemanager.scheduler.monitor.enable and set it to true
 
   
-- In Ambari, make the below compactor/interactive query config changes to Hive config and restart Hive
+- In Ambari, under Hive config: make the below compactor/interactive query config changes and restart Hive
 ![Image](../master/screenshots/hive-config-compactor.png?raw=true)
 ![Image](../master/screenshots/hive-config-interactivequery.png?raw=true)
 
