@@ -35,22 +35,28 @@ ssh root@sandbox.hortonworks.com
   - allocate half the capacity of the cluster to hive (with other half going to default)
   - subdivide the hive queue into 2 queues: hive1 and hive2
   - on each subqueue, set user-limit-factor=4
-  - Click Actions > Save and restart
+  - Click Actions > Save and refresh configs
 
 ![Image](../master/screenshots/screenshot-capacity-scheduler-view.png?raw=true)
 
-- In Ambari, make the below config changes to YARN config and restart YARN
-  - yarn.resourcemanager.scheduler.monitor.enable=true
+- In Ambari, make the below pre-emption config changes to YARN config, Save and restart YARN
+![Image](../master/screenshots/yarn-config-preemption.png?raw=true)
+  - you can also search for the property using its full name: yarn.resourcemanager.scheduler.monitor.enable and set it to true
+
   
-- In Ambari, make the below config changes to Hive config and restart Hive
-  - hive.compactor.initiator.on=true
-  - hive.compactor.worker.threads = 2
-  - hive.server2.tez.initialize.default.sessions = true
-  - hive.server2.tez.default.queues=hiveserver.hive1,hiveserver.hive2
+- In Ambari, make the below compactor/interactive query config changes to Hive config and restart Hive
+![Image](../master/screenshots/yarn-config-compactor.png?raw=true)
+![Image](../master/screenshots/hive-config-interactivequery.png?raw=true)
 
-More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
+  - you can also search for the properties using its full name:
+    - hive.compactor.initiator.on=true
+    - hive.compactor.worker.threads = 2
+    - hive.server2.tez.initialize.default.sessions = true
+    - hive.server2.tez.default.queues=hiveserver.hive1,hiveserver.hive2
 
-More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn/#hive
+- Further reading:
+  - More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
+  - More details on the above parameters can be found in the webinar slides, available at http://hortonworks.com/partners/learn/#hive
 
 ----------------
 
