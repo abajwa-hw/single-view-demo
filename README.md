@@ -30,7 +30,8 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 ssh root@sandbox.hortonworks.com
 ```
 
-- Open YARN Queue Manager view http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE and setup queues:
+- Open YARN Queue Manager view http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE 
+- Use the view to setup YARN queues:
   - allocate half the capacity of the cluster to hive (with other half going to default)
   - subdivide the hive queue into 2 queues: hive1 and hive2
   - on each subqueue, set user-limit-factor=4
