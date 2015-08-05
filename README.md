@@ -35,7 +35,7 @@ ssh root@sandbox.hortonworks.com
   - allocate half the capacity of the cluster to hive (with other half going to default)
   - subdivide the hive queue into 2 queues: hive1 and hive2
   - on each subqueue, set user-limit-factor=4
-  - Save and restart
+  - Click Actions > Save and restart
 
 ![Image](../master/screenshots/screenshot-capacity-scheduler-view.png?raw=true)
 
