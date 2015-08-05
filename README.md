@@ -91,7 +91,9 @@ exit;
 
 - Using the Ambari view for Hive, notice there is no Hive table called persons yet
 
-http://sandbox.hortonworks.com:8080/#/main/views/HIVE/0.1.0/MyHive
+http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+
+![Image](../master/screenshots/screenshot-hiveview-start.png?raw=true)
 
 - Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
