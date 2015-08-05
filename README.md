@@ -75,7 +75,7 @@ use people;
 create table persons (people_id INT PRIMARY KEY, sex text, bdate DATE, firstname text, lastname text, addresslineone text, addresslinetwo text, city text, postalcode text, ssn text, id2 text, email text, id3 text);
 LOAD DATA LOCAL INFILE '~/hdp22-hive-streaming/data/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 ```
-- Now verify that the data was imported
+- In MySQL, verify that the data was imported and exit. The remaining queries will be run in Hive
 ```
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
