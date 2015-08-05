@@ -276,6 +276,7 @@ sudo -u hdfs hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
 - Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
 ```
 cd /root/hdp22-hive-streaming
+mv pom-22.xml pom.xml
 mvn package
 ```
 
