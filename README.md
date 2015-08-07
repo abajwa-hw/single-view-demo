@@ -50,11 +50,14 @@ ssh root@sandbox.hortonworks.com
 ![Image](../master/screenshots/hive-config-compactor.png?raw=true)
 ![Image](../master/screenshots/hive-config-interactivequery.png?raw=true)
 
+  - you may need to enable "Start Tez session at initialization" and restart Hive before you see your newly created hive queues in the drop down.
   - you can also search for the properties using its full name:
     - hive.compactor.initiator.on=true
     - hive.compactor.worker.threads = 2
     - hive.server2.tez.initialize.default.sessions = true
     - hive.server2.tez.default.queues=hiveserver.hive1,hiveserver.hive2
+    
+    
 
 - Further reading:
   - More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
