@@ -349,7 +349,6 @@ select * from persons_view limit 5
 - Check the YARN UI at http://sandbox.hortonworks.com:8088/cluster
   - Notice the jobs run as it1 user were routed to the batch queue while the others went to the default queue
  ![Image](../master/screenshots/lab/YARN-UI1.png?raw=true)  
- ![Image](../master/screenshots/lab/YARN-UI.png?raw=true)
 
 
 ----------------
