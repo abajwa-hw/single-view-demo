@@ -121,16 +121,16 @@ ssh root@sandbox.hortonworks.com
 
 ###### Setup user YARN queues
 
-- In Ambari:
-  - Create users:
-    - mktg1 : non admin, password: admin
-    - it1 : admin: password: admin
-  
-  - View permissions:
-    - Give mktg1 access to HDFS Files and Hive views  
-  
+- In Ambari follow steps below:
+  - Create users with admin privileges:
+    - mktg1 -  password: admin
+    - it1 - password: admin
 
-
+  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
+  
 ----------------
 
 
