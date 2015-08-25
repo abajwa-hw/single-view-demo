@@ -6,6 +6,7 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/README-22.md)
 
 #### Demo overview
+In this lab we model a hadoop cluster with 2 tenants, IT & Marketing.  IT is responsible for onboarding data while Marketing is responsible of running analytical queries.  IT jobs are batch oriented while Marketing queries are typically interactive in nature.  The lab includes steps for setting queues, onboarding data, applying security and running analytical queries.  For the lab, we allocate cluster capacity equally between IT and Marketing.
 
 1. [Start HDP 2.3 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#part-1---start-sandbox-vm-and-enable-hive-features)
 2. [Sqoop - import PII data of users from MySql into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
