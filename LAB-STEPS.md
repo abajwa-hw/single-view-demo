@@ -26,7 +26,7 @@ In this lab we model a hadoop cluster with 2 tenants, IT & Marketing.  IT is res
 ```
 192.168.191.241 sandbox.hortonworks.com sandbox    
 ```
-- Connect to the VM via SSH (password hadoop)
+- Connect to the VM via SSH (password hadoop). You can also open web-based SSH session by opening http://sandbox.hortonworks.com:4200
 ```
 ssh root@sandbox.hortonworks.com
 ```
