@@ -41,6 +41,12 @@ ssh root@sandbox.hortonworks.com
 	sudo -u hdfs hadoop fs -mkdir /user/mktg1
 	sudo -u hdfs hadoop fs -chown mktg1:Marketing /user/mktg1
   ```
+
+  - Start Ranger admin service (if not already started)
+  ```
+  service ranger-admin start
+  ```
+  
   - Install maven from epel
   
   ```
@@ -54,10 +60,7 @@ ssh root@sandbox.hortonworks.com
 	ntpdate pool.ntp.org
 	service ntpd start
   ```
-  - Start Ranger admin service (if not already started)
-  ```
-  service ranger-admin start
-  ```
+
   
 ###### Setup security policies
   
