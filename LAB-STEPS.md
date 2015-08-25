@@ -272,6 +272,8 @@ sqoop job -exec persons_staging
 
 - Now look at staging table and it should only show one record with bdate: 2007-02-02
 
+ ![Image](../master/screenshots/lab/stagingtable-ssn.png?raw=true)
+
 - Now merge this record back to final table using same SQLs as above:
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
@@ -315,6 +317,11 @@ beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 select * from persons_view limit 5
 "
 ```
+
+- Check the YARN UI at http://sandbox.hortonworks.com:8088/cluster
+  - Notice the jobs run as it1 user were routed to the batch queue while the others went to the default queue
+ ![Image](../master/screenshots/lab/YARN-UI1.png?raw=true)  
+ ![Image](../master/screenshots/lab/YARN-UI.png?raw=true)
 
 
 ----------------
