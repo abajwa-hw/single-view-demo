@@ -328,6 +328,16 @@ show tables;
 "
 ```
 - Now login to Ranger UI as admin/admin and create a policy for Marketing to access default db and persons_view table
+  - Open http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies and click Add New Policy
+  - Create a policy with below details:
+    - Policy name: Marketing view tables
+    - Hive Database: default
+    - table: persons_view
+    - Hive column: *
+    - Group: Marketing
+    - Permissions: select
+  
+ ![Image](../master/screenshots/lab/Ranger-policy-hive-views1.png?raw=true)  
 
 - As mktg1 try to query tables
 ```
