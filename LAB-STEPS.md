@@ -110,7 +110,7 @@ ssh root@sandbox.hortonworks.com
     - max capacity: 100%
   ![Image](../master/screenshots/lab/queue-default.png?raw=true)
   
-  - Create a batch queue and make the below changes:
+  - Create a batch queue (at the same level as default queue) and make the below changes:
     - Capacity: 50%  
     - User limit: 1 
     - max capacity: 50%
