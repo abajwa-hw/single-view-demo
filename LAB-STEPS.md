@@ -117,8 +117,8 @@ ssh root@sandbox.hortonworks.com
 
   - Actions > Save and refresh queues > Save changes. This should start a 'Refresh Yarn Capacity Scheduler' operation
   
-- Under Ambari > Dashboard > Hive > Config, make the below changes:
-  - Acid: on
+- Under Ambari > Dashboard > Hive > Config, make the below changes and restart Hive when prompted
+  - Acid transactions: on
   - start tez at init: true
   - sessions per queue: 2
   - authorization: Ranger
