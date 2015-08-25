@@ -57,7 +57,7 @@ ssh root@sandbox.hortonworks.com
 
   - Disable the Global allow policy that grants HDFS permissions to all users on sandbox
     - open http://sandbox.hortonworks.com:6080/index.html#!/service/1/policies/2/edit
-    - Click the enabled button so it becomes disabled:
+    - Click the enabled button so it becomes disabled and click Save:
   ![Image](../master/screenshots/lab/Ranger-policy-disable-global-HDFS.png?raw=true)
     
   - Add new HDFS policy at http://sandbox.hortonworks.com:6080/index.html#!/service/1/policies
@@ -71,7 +71,7 @@ ssh root@sandbox.hortonworks.com
 - Create *Hive* related security policies for the IT group in Ranger:
   - Disable the Global allow policy that grants Hive permissions to all users on sandbox
     - open http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies/5/edit
-    - Click the enabled button so it becomes disabled:  
+    - Click the enabled button so it becomes disabled and click Save:  
   ![Image](../master/screenshots/lab/Ranger-policy-disable-global-hive.png?raw=true)    
 
   - Add new Hive policy for IT group and hive user at http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies
