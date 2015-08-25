@@ -30,34 +30,8 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 ssh root@sandbox.hortonworks.com
 ```
 
-- Ranger policy:
-  - HDFS plugin
-    - disable global allow
-    - create IT global allow on /
-
-  - Hive
-    - disable global allow
-    - create IT global allow on default DB
-    - add hive user to same (needed for Storm topology later)
-  
-- Setup YARN queues:  
-  - Maximum AM Resource: 30%
-  - Queue mappings: g:IT:batch,g:Marketing:default
-  - User limit: 1 for batch and 2 for default
-  - ordering policy: for default set to fair
-  - max capacity: batch is 50%, default: 100%
-
-- Hive changes:
-  - Acid: on
-  - start tez at init: true
-  - sessions per queue: 2
-  - authorization: Ranger
-  - # containers held: 1
-  - fetch column stats at compiler: true
-
-
 - Run below as root for initial setup
-  - Create home dirs in HDFS
+  - Create home dirs for IT/mktg users in HDFS
   ```
 	sudo -u hdfs hadoop fs -mkdir /user/it1
 	sudo -u hdfs hadoop fs -chown it1:IT /user/it1
@@ -77,6 +51,67 @@ ssh root@sandbox.hortonworks.com
 	ntpdate pool.ntp.org
 	service ntpd start
   ```
+  
+- Create *HDFS* related security policies for the IT group in Ranger:
+  - Login to Ranger (admin/admin) at http://sandbox.hortonworks.com:6080/
+
+  - Disable the Global allow policy that grants HDFS permissions to all users on sandbox
+    - open http://sandbox.hortonworks.com:6080/index.html#!/service/1/policies/2/edit
+    - Click the enabled button so it becomes disabled:
+  ![Image](../master/screenshots/lab/Ranger-policy-disable-global-HDFS.png?raw=true)
+    
+  - Add new HDFS policy at http://sandbox.hortonworks.com:6080/index.html#!/service/1/policies
+    - Policy name: IT global allow on root dir
+    - Resource Path: /
+    - Select group: IT
+    - Permissions: Read Write Execute
+
+  ![Image](../master/screenshots/lab/Ranger-policy-HDFS.png?raw=true)
+
+- Create *Hive* related security policies for the IT group in Ranger:
+  - Disable the Global allow policy that grants Hive permissions to all users on sandbox
+    - open http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies/5/edit
+    - Click the enabled button so it becomes disabled:  
+  ![Image](../master/screenshots/lab/Ranger-policy-disable-global-hive.png?raw=true)    
+
+  - Add new Hive policy for IT group and hive user at http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies
+    - Policy name: IT group permission on default DB
+    - Hive Database: default
+    - table: *
+    - Hive column: *
+    - Group: IT
+    - User: hive
+    - Permissions: All
+          
+  ![Image](../master/screenshots/lab/Ranger-policy-hive.png?raw=true)
+
+  
+- Setup/configure 'batch' and 'default' YARN queues using 'YARN Queue Manager' view in Ambari: http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE
+  - For the default queue, make the below changes:
+    - Maximum AM Resource: 30%
+    - Queue mappings: g:IT:batch,g:Marketing:default
+    - User limit: 2 
+    - ordering policy: set to fair
+    - max capacity: 100%
+  ![Image](../master/screenshots/lab/queue-default.png?raw=true)
+  
+  - Create a batch queue and make the below changes:
+    - User limit: 1 
+    - max capacity: 50%
+  ![Image](../master/screenshots/lab/queue-batch.png?raw=true)
+
+
+- Under Ambari > Dashboard > Hive > Config, make the below changes:
+  - Acid: on
+  - start tez at init: true
+  - sessions per queue: 2
+  - authorization: Ranger
+  - # containers held: 1
+  - fetch column stats at compiler: true
+
+  ![Image](../master/screenshots/lab/hive-configs.png?raw=true)
+
+
 
 
 - In Ambari:
