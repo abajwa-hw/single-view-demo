@@ -127,9 +127,9 @@ ssh root@sandbox.hortonworks.com
     - it1 - password: admin
 
   ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
-  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
-  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
-  ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser2.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser3.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser4.png?raw=true)
   
 ----------------
 
