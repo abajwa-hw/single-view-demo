@@ -149,7 +149,7 @@ ssh root@sandbox.hortonworks.com
 
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 
-- Note the queries shown below can also be run via Hive view in Ambari http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive by logging in as either it1 or mktg1 (depending on which user is supposed to run it)
+- Note the queries shown below can also be run, one by one, via Hive view in Ambari http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive by logging in as either it1 or mktg1 (depending on which user is supposed to run it)
 
 - Login as it1
 ```
@@ -562,7 +562,7 @@ analyze table user_Tweets compute statistics;
 analyze table webtraffic partition(year,month,day) compute statistics;
 ```
 
-- Run Hive column statistics
+- (Optional) - Run Hive column statistics
 ```
 analyze table persons compute statistics for columns;
 analyze table user_Tweets compute statistics for columns;
