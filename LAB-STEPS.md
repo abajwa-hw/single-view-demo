@@ -149,7 +149,9 @@ ssh root@sandbox.hortonworks.com
 
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 
-- Note the queries shown below can also be run, one by one, via Hive view in Ambari http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive by logging in as either it1 or mktg1 (depending on which user is supposed to run it)
+- Note the hive queries shown below can either
+  - by run via beeline CLI
+  - or one by one, using Hive view in Ambari by logging in as either it1 or mktg1 (depending on which user is supposed to run it): http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 - Login as it1
 ```
@@ -358,7 +360,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
 ##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
-- As it1, use Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+- As it1, use beeline or Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
  
 ````
 su it1
