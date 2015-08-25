@@ -514,6 +514,8 @@ delete from user_tweets;
 ```
 Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
+----------------
+
 
 - Create views from user_Tweets and webtraffic tables for mktg1 user to access
 ```
@@ -521,8 +523,12 @@ beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 create view user_Tweets_view as select * from user_Tweets;
 create view webtraffic_view as select * from webtraffic;
 "
-
 ```
+
+- Now login to Ranger UI as admin/admin and create a policy for Marketing to access user_Tweets_view and webtraffic_view tables
+
+![Image](../master/screenshots/lab/Ranger-policy-hive-views.png?raw=true)
+
 
 ----------------
 
@@ -551,14 +557,14 @@ analyze table webtraffic partition(year,month,day) compute statistics for column
 
 - Check size of PII table
 ```
-select count(*) from persons;
+select count(*) from persons_view;
 ```
 returns 400 rows
 
 - Correlate browsing history with PII data
 ```
 select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
-from persons p, webtraffic w 
+from persons_view p, webtraffic_view w 
 where w.id = p.people_id;
 ```
 Notice the last field contains the browsing history:
@@ -567,7 +573,7 @@ Notice the last field contains the browsing history:
 - Correlate tweets with PII data
 ```
 select t.userid, t.twitterid, p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet 
-from persons p, user_tweets t 
+from persons_view p, user_tweets_view t 
 where t.userid = p.people_id;
 ```
 Notice the last field contains the Tweet history:
@@ -576,7 +582,7 @@ Notice the last field contains the Tweet history:
 - Correlate all 3
 ```
 select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val, t.tweet
-from persons p, user_tweets t, webtraffic w 
+from persons_view p, user_tweets_view t, webtraffic_view w 
 where w.id = t.userid and t.userid = p.people_id
 order by p.ssn;
 ```
