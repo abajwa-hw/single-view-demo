@@ -100,7 +100,8 @@ http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 - Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
-cp -a /usr/hdp/current/ranger-admin/ews/webapp/WEB-INF/lib/mysql-connector-java-5.1.31.jar /usr/share/java/
+wget http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.31/mysql-connector-java-5.1.31.jar -O /tmp/mysql-connector-java-5.1.31.jar 
+cp -a /tmp/mysql-connector-java-5.1.31.jar  /usr/share/java/
 ln -sf /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-connector-java.jar
 ls -la /usr/share/java/my*
 ```
