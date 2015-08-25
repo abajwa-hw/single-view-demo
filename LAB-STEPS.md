@@ -358,7 +358,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
 ##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
-- Use Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+- As it1, use Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
  
 ````
 su it1
