@@ -316,7 +316,9 @@ select * from persons_view limit 5
 "
 ```
 
+
 ----------------
+
 
 ##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
 
