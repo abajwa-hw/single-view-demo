@@ -100,7 +100,7 @@ ssh root@sandbox.hortonworks.com
 
 ###### Setup user YARN queues
   
-- Setup/configure 'batch' and 'default' YARN queues using 'YARN Queue Manager' view in Ambari: http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE
+- Setup/configure 'batch' and 'default' YARN queues using 'YARN Queue Manager' view in Ambari (login as admin/admin): http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE
   - For the default queue, make the below changes:
     - Maximum AM Resource: 30%
     - Queue mappings: g:IT:batch,g:Marketing:default
