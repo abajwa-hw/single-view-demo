@@ -415,7 +415,7 @@ tail -F /tmp/webtraffic.log
 ```
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
-- After 6-7min, notice that the script has completed and the webtraffic table now has records created
+- After 6-7 min, notice that the script has completed and the webtraffic table now has records created (while waiting you can get your Twitter consumer key/secrets - see part 4)
 
 http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
@@ -434,6 +434,13 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtra
 
 ##### Part 4: Import tweets for users into Hive ORC table via Storm
 
+
+- Twitter4J requires you to have a Twitter account and obtain developer keys by registering an "app". Create a Twitter account and app and get your consumer key/token and access keys/tokens:
+  - Open https://apps.twitter.com 
+  - sign in
+  - create new app
+  - fill anything
+  - create access tokens
 
 - Add your Twitter consumer key/secret, token/secret under [hdp22-hive-streaming/src/test/HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L40)
 
