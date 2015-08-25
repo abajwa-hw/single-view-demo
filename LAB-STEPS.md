@@ -149,9 +149,12 @@ ssh root@sandbox.hortonworks.com
 
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 
-- Pull the latest Hive streaming code/scripts
+- Login as it1
 ```
 su it1
+```
+- Pull the latest Hive streaming code/scripts
+```
 cd
 git clone https://github.com/abajwa-hw/hdp22-hive-streaming.git 
 ```
