@@ -555,6 +555,8 @@ create view webtraffic_view as select * from webtraffic;
 
 ##### Part 5: Analyze table to populate Hive statistics
 
+- As it1 user...
+
 - Run Hive table statistics
 ```
 analyze table persons compute statistics;
@@ -574,7 +576,7 @@ analyze table webtraffic partition(year,month,day) compute statistics for column
 
 ##### Part 6: Run Hive query to correlate the data from thee different sources
 
-- Using the Hive view http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive :
+- As mktg1 user, run the below BI queries using the Hive view http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive :
 
 - Check size of PII table
 ```
