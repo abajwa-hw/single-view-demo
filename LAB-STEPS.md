@@ -343,7 +343,7 @@ select * from persons_view limit 5
 - Open Files view and navigate to /apps/hive/warehouse/persons and view the files
 
 http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
-![Image](../master/screenshots/screenshot-hiveview-persons-data.png?raw=true)
+![Image](../master/screenshots/screenshot-filesview-persons-HDFS.png?raw=true)
 
 - Notice the table is stored in ORC format
 ![Image](../master/screenshots/screenshot-hiveview-persons-data-ORC.png?raw=true)
