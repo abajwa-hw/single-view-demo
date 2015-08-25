@@ -59,23 +59,23 @@ ssh root@sandbox.hortonworks.com
 - Run below as root for initial setup
   - Create home dirs in HDFS
 ```
-sudo -u hdfs hadoop fs -mkdir /user/it1
-sudo -u hdfs hadoop fs -chown it1:IT /user/it1
-sudo -u hdfs hadoop fs -mkdir /user/mktg1
-sudo -u hdfs hadoop fs -chown mktg1:Marketing /user/mktg1
+	sudo -u hdfs hadoop fs -mkdir /user/it1
+	sudo -u hdfs hadoop fs -chown it1:IT /user/it1
+	sudo -u hdfs hadoop fs -mkdir /user/mktg1
+	sudo -u hdfs hadoop fs -chown mktg1:Marketing /user/mktg1
 ```
   - Install maven from epel
   
 ```
-curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
-yum -y install apache-maven ntp
+	curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
+	yum -y install apache-maven ntp
 ```
   - In case your system time is not accurate, fix it to avoid errors from Twitter4J
   
 ```
-service ntpd stop
-ntpdate pool.ntp.org
-service ntpd start
+	service ntpd stop
+	ntpdate pool.ntp.org
+	service ntpd start
 ```
 
 
