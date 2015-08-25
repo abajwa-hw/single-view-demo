@@ -591,7 +591,7 @@ beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.last4ssn, w.val, t.tweet
 from persons_view p, user_tweets_view t, webtraffic_view w 
 where w.id = t.userid and t.userid = p.people_id
-order by p.ssn;
+order by p.last4ssn;
 "
 ```
 Notice the last 2 field contains the browsing and Tweet history:
