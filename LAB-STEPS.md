@@ -340,6 +340,14 @@ select * from persons_view limit 5
 "
 ```
 
+- Open Files view and navigate to /apps/hive/warehouse/persons and view the files
+
+http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
+![Image](../master/screenshots/screenshot-hiveview-persons-data.png?raw=true)
+
+- Notice the table is stored in ORC format
+![Image](../master/screenshots/screenshot-hiveview-persons-data-ORC.png?raw=true)
+
 - Check the YARN UI at http://sandbox.hortonworks.com:8088/cluster
   - Notice the jobs run as it1 user were routed to the batch queue while the others went to the default queue
  ![Image](../master/screenshots/lab/YARN-UI1.png?raw=true)  
@@ -452,7 +460,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 - Open Files view and navigate to /apps/hive/warehouse/webtraffic/year=xxxx/month=xx/day=xx/delta_0000001_0000100 and view the files
 
-http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtraffic
+http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 ![Image](../master/screenshots/screenshot-view-webtraffic-HDFS.png?raw=true)
 
 - Notice the table is stored in ORC format
