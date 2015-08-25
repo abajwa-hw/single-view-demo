@@ -149,6 +149,8 @@ ssh root@sandbox.hortonworks.com
 
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 
+- Note the queries shown below can also be run via Hive view in Ambari http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive by logging in as either it1 or mktg1 (depending on which user is supposed to run it)
+
 - Login as it1
 ```
 su it1
