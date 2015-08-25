@@ -498,15 +498,6 @@ storm kill twitter_topology
 - After a few seconds, navigate to Hive view and query the user_tweets table and notice it now contains tweets
 ![Image](../master/screenshots/screenshot-hiveview-usertweets.png?raw=true)
 
-  - If using Hue: You may encounter the below error through Hue when browsing this table. This is because in this version, Hue beeswax does not support UTF-8 and there were such characters present in the tweets
-```
-'ascii' codec can't decode byte 0xf0 in position 62: ordinal not in range(128)
-```
-  - To workaround replace ```default_filters=['unicode', 'escape'],``` with ```default_filters=['decode.utf8', 'unicode', 'escape'],``` in /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
-```
-cp  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py.orig
-sed -i "s/default_filters=\['unicode', 'escape'\],/default_filters=\['decode.utf8', 'unicode', 'escape'\],/g" /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
-```
 
 - Open Files view and navigate to /apps/hive/warehouse/user_tweets: http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
@@ -522,6 +513,15 @@ delete from user_tweets;
 ```
 Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
+
+- Create views from user_Tweets and webtraffic tables for mktg1 user to access
+```
+beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
+create view user_Tweets_view as select * from user_Tweets;
+create view webtraffic_view as select * from webtraffic;
+"
+
+```
 
 ----------------
 
