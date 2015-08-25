@@ -180,11 +180,6 @@ select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
 ```
 
-- **TODO** remove if not neeeded
-```
-hadoop fs -mkdir -p staging/sqoop/persons
-```
-
 - Create the staging table in Hive
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
@@ -295,11 +290,10 @@ sqoop job -exec persons_staging
 - Now merge this record back to final table using same SQLs as above:
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
+
 delete from persons where persons.people_id in (select people_id from persons_staging);
 
-insert into persons select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,ssn,id2,email,id3,lastupdate from persons_staging;
-# insert into persons select * from persons_staging;
-
+insert into persons select * from persons_staging;
 
 truncate table persons_staging;
 "
