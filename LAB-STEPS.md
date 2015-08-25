@@ -128,7 +128,7 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/hive-configs.png?raw=true)
 
 
-###### Enable user to log into Ambari views
+###### Enable users to log into Ambari views
 
 - In Ambari follow steps below:
   - Create users with admin privileges:
