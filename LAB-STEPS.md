@@ -428,8 +428,9 @@ tail -F /var/log/flume/flume-agent.log
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
 ```
 
-- Using another terminal window, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
+- Using another terminal window, as it1 user, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
+su it1
 cd ~/hdp22-hive-streaming
 ./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
 ```
