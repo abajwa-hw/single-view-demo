@@ -30,7 +30,7 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 ssh root@sandbox.hortonworks.com
 ```
 
-##### Setup user directories
+###### Setup user directories
 
 - Run below as root for initial setup
   - Create home dirs for IT/mktg users in HDFS
@@ -54,7 +54,7 @@ ssh root@sandbox.hortonworks.com
 	service ntpd start
   ```
 
-##### Setup security policies
+###### Setup security policies
   
 - Create *HDFS* related security policies for the IT group in Ranger:
   - Login to Ranger (admin/admin) at http://sandbox.hortonworks.com:6080/
@@ -90,7 +90,7 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/Ranger-policy-hive.png?raw=true)
 
 
-##### Setup user YARN queues
+###### Setup user YARN queues
   
 - Setup/configure 'batch' and 'default' YARN queues using 'YARN Queue Manager' view in Ambari: http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE
   - For the default queue, make the below changes:
@@ -118,7 +118,7 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/hive-configs.png?raw=true)
 
 
-##### Setup user YARN queues
+###### Setup user YARN queues
 
 - In Ambari:
   - Create users:
