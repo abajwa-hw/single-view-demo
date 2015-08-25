@@ -54,7 +54,11 @@ ssh root@sandbox.hortonworks.com
 	ntpdate pool.ntp.org
 	service ntpd start
   ```
-
+  - Start Ranger admin service (if not already started)
+  ```
+  service ranger-admin start
+  ```
+  
 ###### Setup security policies
   
 - Create *HDFS* related security policies for the IT group in Ranger:
