@@ -163,6 +163,7 @@ sqoop job -list
 ```
 
   - should show
+
 ```
 Available jobs:
   persons_staging
