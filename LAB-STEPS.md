@@ -563,7 +563,7 @@ returns 400 rows
 
 - Correlate browsing history with PII data
 ```
-select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.last4ssn, w.val
 from persons_view p, webtraffic_view w 
 where w.id = p.people_id;
 ```
