@@ -110,13 +110,13 @@ ssh root@sandbox.hortonworks.com
     - max capacity: 100%
   ![Image](../master/screenshots/lab/queue-default.png?raw=true)
   
-  - Create a batch queue (at the same level as default queue) and make the below changes:
+  - Create a batch queue (at the same level as default queue) and ensure the below are set changes:
     - Capacity: 50%  
-    - User limit: 1 
     - max capacity: 50%
   ![Image](../master/screenshots/lab/queue-batch.png?raw=true)
 
-
+  - Actions > Save and refresh queues > Save changes. This should start a 'Refresh Yarn Capacity Scheduler' operation
+  
 - Under Ambari > Dashboard > Hive > Config, make the below changes:
   - Acid: on
   - start tez at init: true
