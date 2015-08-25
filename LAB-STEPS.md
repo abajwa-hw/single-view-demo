@@ -16,7 +16,7 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 7. [What to try next?](https://github.com/abajwa-hw/hdp22-hive-streaming#what-to-try-next)
 
 
-##### Part 1 - Start sandbox VM and enable Hive features 
+##### Part 1 - Start sandbox VM and tenant onboarding
 
 - Download HDP 2.3 sandbox VM image (Sandbox_HDP_2.3_VMware.ova) from [Hortonworks website](http://hortonworks.com/products/hortonworks-sandbox/)
 - Import Sandbox_HDP_2.3_VMware.ova into VMWare and set the VM memory size to 8GB
@@ -29,6 +29,8 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 ```
 ssh root@sandbox.hortonworks.com
 ```
+
+##### Setup user directories
 
 - Run below as root for initial setup
   - Create home dirs for IT/mktg users in HDFS
@@ -51,6 +53,8 @@ ssh root@sandbox.hortonworks.com
 	ntpdate pool.ntp.org
 	service ntpd start
   ```
+
+##### Setup security policies
   
 - Create *HDFS* related security policies for the IT group in Ranger:
   - Login to Ranger (admin/admin) at http://sandbox.hortonworks.com:6080/
@@ -85,6 +89,8 @@ ssh root@sandbox.hortonworks.com
           
   ![Image](../master/screenshots/lab/Ranger-policy-hive.png?raw=true)
 
+
+##### Setup user YARN queues
   
 - Setup/configure 'batch' and 'default' YARN queues using 'YARN Queue Manager' view in Ambari: http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE
   - For the default queue, make the below changes:
@@ -112,7 +118,7 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/hive-configs.png?raw=true)
 
 
-
+##### Setup user YARN queues
 
 - In Ambari:
   - Create users:
