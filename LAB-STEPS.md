@@ -504,7 +504,7 @@ mvn package
 
 - Run the topology on the cluster and notice twitter_topology appears on Storm webui
 ```
-cd /root/hdp22-hive-streaming
+cd ~/hdp22-hive-streaming
 storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
 ```
 
