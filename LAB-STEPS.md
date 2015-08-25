@@ -195,36 +195,30 @@ touch mysqlpasswd.txt
 hadoop fs -put mysqlpasswd.txt /user/it1
 ```
 
-- create a incremental sqoop job pointing to password file
+- create a incremental sqoop job (pointing to password file) 
 ```
 sqoop job -create persons_staging -- import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --password-file hdfs://sandbox.hortonworks.com:8020/user/it1/mysqlpasswd.txt --hcatalog-table persons_staging  -m 1 --check-column lastupdate --incremental lastmodified --last-value '1900-01-01'
 ```
-- validate it got created
+- validate the job got created
+  - this should show available jobs
 ```
 sqoop job -list
 ```
 
-  - should show
-
-```
-Available jobs:
-  persons_staging
-```
-
-- Run first iteration
+- Run first iteration of Sqoop job to import users from MySQL to staging table
 ```
 sqoop job -exec persons_staging
 ```
 
-- (Optional) In case you need to do it over:
+- (Optional) In case you made a mistake and need to do it over:
 ```
 sqoop job -delete persons_staging
 ```
 
-- Loin to ambari as it1/admin and verify that 400 records created
+- Login to ambari as it1/admin and verify that 400 records created
 
 
-- Create persons table
+- Create persons (final) table in hive 
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 create table persons (people_id INT , sex string, bdate DATE, firstname string
@@ -245,8 +239,8 @@ TBLPROPERTIES ('transactional'='true')
 "
 ```
 
-- Move data form staging table to final table. 
-  - first remove records in final table that are also found in staging table
+- Move data from staging table to final table. 
+  - first remove the records from final table that are also found in staging table
   - move data from staging table to final table
   - truncate staging table
 ```
