@@ -139,6 +139,9 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/ambari-adduser2.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser3.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser4.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-adduser5.png?raw=true)
+  
+  - Note in a real scenario, these users would be part of LDAP/AD and Ambari would simply authenticate against it.
   
 ----------------
 
