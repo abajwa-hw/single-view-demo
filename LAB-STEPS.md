@@ -213,7 +213,7 @@ touch mysqlpasswd.txt
 hadoop fs -put mysqlpasswd.txt /user/it1
 ```
 
-- create a incremental sqoop job (pointing to password file) 
+- create an incremental sqoop job (pointing to password file) 
 ```
 sqoop job -create persons_staging -- import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --password-file hdfs://sandbox.hortonworks.com:8020/user/it1/mysqlpasswd.txt --hcatalog-table persons_staging  -m 1 --check-column lastupdate --incremental lastmodified --last-value '1900-01-01'
 ```
@@ -223,7 +223,7 @@ sqoop job -create persons_staging -- import --verbose --connect 'jdbc:mysql://lo
 sqoop job -list
 ```
 
-- Run first iteration of Sqoop job to import users from MySQL to staging table
+- Run the first iteration of Sqoop job to import users from MySQL to staging table
 ```
 sqoop job -exec persons_staging
 ```
@@ -233,7 +233,7 @@ sqoop job -exec persons_staging
 sqoop job -delete persons_staging
 ```
 
-- Login to ambari as it1/admin and verify that 400 records created
+- Login to Hive view as it1 and verify that 400 records created in persons_staging: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 
 - Create persons (final) table in hive 
@@ -265,7 +265,7 @@ TBLPROPERTIES ('transactional'='true')
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 delete from persons where persons.people_id in (select people_id from persons_staging);
 
-insert into persons select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,ssn,substr(ssn,length(ssn)-4),id2,email,id3,lastupdate from persons_staging;
+insert into persons select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,ssn,id2,email,id3,lastupdate from persons_staging;
 
 truncate table persons_staging;
 "
