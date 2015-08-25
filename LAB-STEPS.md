@@ -564,7 +564,7 @@ analyze table user_Tweets compute statistics;
 analyze table webtraffic partition(year,month,day) compute statistics;
 ```
 
-- (Optional) - Run Hive column statistics
+- Run Hive column statistics
 ```
 analyze table persons compute statistics for columns;
 analyze table user_Tweets compute statistics for columns;
