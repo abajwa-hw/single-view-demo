@@ -161,6 +161,7 @@ sqoop job -create persons_staging -- import --verbose --connect 'jdbc:mysql://lo
 ```
 sqoop job -list
 ```
+
   - should show
 ```
 Available jobs:
