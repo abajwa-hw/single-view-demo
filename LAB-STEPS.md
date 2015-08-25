@@ -120,7 +120,10 @@ select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
 ```
 
-##hadoop fs -mkdir -p staging/sqoop/persons
+- **TODO** remove if not neeeded
+```
+hadoop fs -mkdir -p staging/sqoop/persons
+```
 
 - Create the staging table in Hive
 ```
@@ -464,5 +467,84 @@ delete from user_tweets;
 ```
 Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
 
+
 ----------------
+
+##### Part 5: Analyze table to populate Hive statistics
+
+- Run Hive table statistics
+```
+analyze table persons compute statistics;
+analyze table user_Tweets compute statistics;
+analyze table webtraffic partition(year,month,day) compute statistics;
+```
+
+- Run Hive column statistics
+```
+analyze table persons compute statistics for columns;
+analyze table user_Tweets compute statistics for columns;
+analyze table webtraffic partition(year,month,day) compute statistics for columns;
+```
+
+------------------
+
+
+##### Part 6: Run Hive query to correlate the data from thee different sources
+
+- Using the Hive view http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive :
+
+- Check size of PII table
+```
+select count(*) from persons;
+```
+returns 400 rows
+
+- Correlate browsing history with PII data
+```
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val
+from persons p, webtraffic w 
+where w.id = p.people_id;
+```
+Notice the last field contains the browsing history:
+![Image](../master/screenshots/screenshot-hiveview-query1.png?raw=true)
+
+- Correlate tweets with PII data
+```
+select t.userid, t.twitterid, p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, t.tweet 
+from persons p, user_tweets t 
+where t.userid = p.people_id;
+```
+Notice the last field contains the Tweet history:
+![Image](../master/screenshots/screenshot-hiveview-query2.png?raw=true)
+
+- Correlate all 3
+```
+select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.ssn, w.val, t.tweet
+from persons p, user_tweets t, webtraffic w 
+where w.id = t.userid and t.userid = p.people_id
+order by p.ssn;
+```
+Notice the last 2 field contains the browsing and Tweet history:
+![Image](../master/screenshots/screenshot-hiveview-query3.png?raw=true)
+
+- Notice that for these queries Hive view provides the option to view Visual Explain of the query for performance tuning.
+![Image](../master/screenshots/hive-visualexplain.png?raw=true)
+
+- Also notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
+![Image](../master/screenshots/hive-tezgraph.png?raw=true)
+
+-----------------------
+
+##### What to try next?
+
+- Enhance the sample Twitter Storm topology
+  - Import the above Storm sample into Eclipse on the sandbox VM using an *Ambari stack for VNC* and use the Maven plugin to compile the code. Steps available at https://github.com/abajwa-hw/vnc-stack
+  - Update [HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets
+  - Add other Bolts to this basic topology to process the Tweets (e.g. rolling count) and write them to different components (like HBase, Solr etc). Here is a HDP 2.2 sample project showing a more complicated topology with Tweets being generated from a Kafka producer and being emitted into local filesystem, HDFS, Hive, Solr and HBase: https://github.com/abajwa-hw/hdp22-twitter-demo 
+  
+- Use Sqoop to import data into ORC tables from other databases (e.g. Oracle, MSSQL etc). See [this blog entry](http://hortonworks.com/hadoop-tutorial/import-microsoft-sql-server-hortonworks-sandbox-using-sqoop/) for more details
+
+- Experiment with Flume
+  - Change the Flume configuration to use different channels (e.g. FileChannel or Spillable Memory Channel) or write to different sinks (e.g HBase). See the [Flume user guide](http://flume.apache.org/FlumeUserGuide.html) for more details.
+  
 
