@@ -66,11 +66,14 @@ sudo -u hdfs hadoop fs -chown mktg1:Marketing /user/mktg1
 ```
 
   - Install maven from epel
+  
 ```
 curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
 yum -y install apache-maven ntp
 ```
+
   - In case your system time is not accurate, fix it to avoid errors from Twitter4J
+  
 ```
 service ntpd stop
 ntpdate pool.ntp.org
