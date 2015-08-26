@@ -131,18 +131,18 @@ ssh root@sandbox.hortonworks.com
 ###### Enable users to log into Ambari views
 
 - In Ambari follow steps below:
-  - Create users with admin privileges:
-    - it1  password: admin
+  - Create a user with admin privileges via 'Manage Users' menu:
+    - user: it1  password: admin
 
   ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser2.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser3.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser4.png?raw=true)
   
-    - Create non-admin user:
-      - mktg1 password: admin
-      - under permissions: add readonly permission to mktg1
-      - under views: Navigate to Hive > Hive > Under 'Permissions' grant mktg1 access to Hive view
+    - Create non-admin user via 'Manage Users' menu:
+      - user: mktg1 password: admin
+      - under 'Permissions': add readonly permission to mktg1
+      - under 'Views': Navigate to Hive > Hive > Under 'Permissions' grant mktg1 access to Hive view
 
   ![Image](../master/screenshots/lab/ambari-mktg1-user-1.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-mktg1-user-2.png?raw=true)
