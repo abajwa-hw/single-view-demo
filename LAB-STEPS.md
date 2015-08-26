@@ -110,14 +110,14 @@ ssh root@sandbox.hortonworks.com
     - max capacity: 100%
   ![Image](../master/screenshots/lab/queue-default.png?raw=true)
   
-  - Create a batch queue (at the same level as default queue) and ensure the below are set changes:
+  - Create a batch queue at the same level as default queue (first highlight root queue, then click "Add Queue") and ensure the below are set changes:
     - Capacity: 50%  
     - max capacity: 50%
   ![Image](../master/screenshots/lab/queue-batch.png?raw=true)
 
   - Actions > Save and refresh queues > Save changes. This should start a 'Refresh Yarn Capacity Scheduler' operation
   
-- Under Ambari > Dashboard > Hive > Config, make the below changes and restart Hive when prompted
+- Under Ambari > Dashboard > Hive > Config, make the below changes then: Save > OK > Proceed Anyway > OK > Restart all affected > Confirm restart all
   - Acid transactions: on
   - start tez at init: true
   - sessions per queue: 2
@@ -150,8 +150,10 @@ ssh root@sandbox.hortonworks.com
 ##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
 
 - Note the hive queries shown below can either
-  - by run via beeline CLI
-  - or one by one, using Hive view in Ambari by logging in as either it1 or mktg1 (depending on which user is supposed to run it): http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+  - run via beeline CLI from your terminal shell prompt or 
+  - using Hive view in Ambari by logging in as either it1 or mktg1 (depending on which user is supposed to run it): http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+    - make sure just to copy the SQL (and not the beeline command)
+    - make sure to run the queries *one SQL at a time*
 
 - Login as it1
 ```
@@ -176,7 +178,7 @@ use people;
 create table persons (people_id INT PRIMARY KEY, sex text, bdate DATE, firstname text, lastname text, addresslineone text, addresslinetwo text, city text, postalcode text, ssn text, id2 text, email text, id3 text,lastupdate timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP );
 LOAD DATA LOCAL INFILE '~/hdp22-hive-streaming/data/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 ```
-- In MySQL, verify that the data was imported and exit. The remaining queries will be run in Hive
+- In MySQL, verify that the data was imported and exit. 
 ```
 select people_id, firstname, lastname, city from persons where lastname='SMITH';
 exit;
@@ -202,15 +204,18 @@ stored as orc
 "
 ```
 
-- view shows table is created
+- If using the Hive view, note that:
+  - you can click the 'refresh' icon next to the Database explorer and click on default database to confirm the new table was created.
+  - you can click on the 'list' icon next to each table as a shortcut to preview its contents
 
-- put empty password file into HDFS
+
+- Sqoop will require the MySQL password (empty in this case). Put empty password file into HDFS
 ```
 touch mysqlpasswd.txt
 hadoop fs -put mysqlpasswd.txt /user/it1
 ```
 
-- create an incremental sqoop job (pointing to password file) 
+- Create an incremental sqoop job (pointing to password file) 
 ```
 sqoop job -create persons_staging -- import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --password-file hdfs://sandbox.hortonworks.com:8020/user/it1/mysqlpasswd.txt --hcatalog-table persons_staging  -m 1 --check-column lastupdate --incremental lastmodified --last-value '1900-01-01'
 ```
@@ -268,7 +273,7 @@ truncate table persons_staging;
 "
 ```
 
-- Update existing record in mysql
+- Update existing record **in mysql**. The remaining queries will be run in Hive
 ```
 mysql -u root -p
 #empty password
@@ -311,7 +316,7 @@ select bdate from persons where people_id=619561879;
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 create view persons_view as 
-select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,substr(ssn,length(ssn)-3) last4ssn ,id2,email,id3,lastupdate from persons;
+select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,substr(ssn,length(ssn)-3) last4ssn ,id2,email,id3,lastupdate from persons
 ;
 "
 ```
@@ -335,14 +340,14 @@ show tables;
   
  ![Image](../master/screenshots/lab/Ranger-policy-hive-views1.png?raw=true)  
 
-- As mktg1 try to query tables
+- As mktg1 try to query tables. To use the Hive view as mktg1 user, you can open the url in a different browser and login as mktg1: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 select * from persons_view limit 5
 "
 ```
 
-- Open Files view and navigate to /apps/hive/warehouse/persons and view the files
+- As it1 user, open Files view and navigate to /apps/hive/warehouse/persons and open one of the delta_* folders and download/view one of the bucket* files
 
 http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 ![Image](../master/screenshots/screenshot-filesview-persons-HDFS.png?raw=true)
@@ -363,8 +368,6 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 - As it1, use beeline or Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
  
 ````
-su it1
-
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 create table if not exists webtraffic (id int, val string) 
 partitioned by (year string,month string,day string) 
@@ -417,7 +420,7 @@ agent.sinks.hiveout.serializer.fieldnames =id,val
 agent.sinks.hiveout.channel = memoryChannel
 ```
 
-- Start tailing the flume agent log file in one terminal...
+- (Optional) Start tailing the flume agent log file in one terminal...
 ```
 tail -F /var/log/flume/flume-agent.log
 ```
@@ -434,11 +437,10 @@ tail -F /var/log/flume/flume-agent.log
 
 - Using another terminal window, as it1 user, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
-su it1
 cd ~/hdp22-hive-streaming
 ./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
 ```
-- Start tailing the webtraffic file in another terminal
+- (Optional) Tailing the webtraffic file in another terminal to see the webtraffic records
 ```
 tail -F /tmp/webtraffic.log
 ```
@@ -454,13 +456,21 @@ tail -F /tmp/webtraffic.log
 ```
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
+  - You may see the below errors. These are caused by Ambari Metrics service being down and can be ignored.
+  ```
+  I/O exception (java.net.ConnectException) caught when processing request: Connection refused
+  Unable to send metrics to collector by address:http://sandbox.hortonworks.com:6188/ws/v1/timeline/metrics
+  ```
+  
+- This will run for ~6 min. You can take this time to sign up for a Twitter account and obtain developer keys (needed for the next part of the workshop)
+
 - After 6-7 min, notice that the script has completed and the webtraffic table now has records created (while waiting you can get your Twitter consumer key/secrets - see part 4)
 
 http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 ![Image](../master/screenshots/screenshot-view-webtraffic-data.png?raw=true)
 
-- Open Files view and navigate to /apps/hive/warehouse/webtraffic/year=xxxx/month=xx/day=xx/delta_0000001_0000100 and view the files
+- Open Files view and navigate to /apps/hive/warehouse/webtraffic/year=xxxx/month=xx/day=xx/delta_xxxxxxxxx and view the files
 
 http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 ![Image](../master/screenshots/screenshot-view-webtraffic-HDFS.png?raw=true)
@@ -486,7 +496,8 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 7 buckets stored as orc tblproperties('orc.compress'='NONE','transactional'='true');
+create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 7 buckets stored as orc tblproperties('orc.compress'='NONE','transactional'='true')
+;
 "
 ```
 ![Image](../master/screenshots/create-usertweets-table.png?raw=true)
@@ -531,7 +542,7 @@ storm kill twitter_topology
 ![Image](../master/screenshots/screenshot-hiveview-usertweets.png?raw=true)
 
 
-- Open Files view and navigate to /apps/hive/warehouse/user_tweets: http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
+- Open Files view and navigate to /apps/hive/warehouse/user_tweets/delta_xxxx/bucket_xxxx: http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
 ![Image](../master/screenshots/screenshot-filesview-usertweets-HDFS.png?raw=true)
 
@@ -539,7 +550,10 @@ storm kill twitter_topology
 
 ![Image](../master/screenshots/screenshot-filesview-usertweets-HDFS-ORC.png?raw=true)
 
-- In case you want to empty the table for future runs, you can run below 
+- Troubleshooting:
+  - In case no tweets appear after 30s, double check that you added 'hive' user to the 'IT group permission on default DB' policy you created at the start
+  
+- (Optional) In case you want to empty the table for future runs, you can run below 
 ```
 delete from user_tweets;
 ```
@@ -574,7 +588,7 @@ analyze table user_Tweets compute statistics;
 analyze table webtraffic partition(year,month,day) compute statistics;
 ```
 
-- Run Hive column statistics
+- Run Hive column statistics (these may take 20-30s each)
 ```
 analyze table persons compute statistics for columns;
 analyze table user_Tweets compute statistics for columns;
@@ -605,7 +619,7 @@ where w.id = p.people_id;
 "
 ```
 Notice the last field contains the browsing history:
-![Image](../master/screenshots/screenshot-hiveview-query1.png?raw=true)
+![Image](../master/screenshots/BI-query1.png?raw=true)
 
 - Correlate tweets with PII data
 ```
@@ -616,7 +630,7 @@ where t.userid = p.people_id;
 "
 ```
 Notice the last field contains the Tweet history:
-![Image](../master/screenshots/screenshot-hiveview-query2.png?raw=true)
+![Image](../master/screenshots/BI-query2.png?raw=true)
 
 - Correlate all 3
 ```
@@ -628,14 +642,16 @@ order by p.last4ssn;
 "
 ```
 Notice the last 2 field contains the browsing and Tweet history:
-![Image](../master/screenshots/screenshot-hiveview-query3.png?raw=true)
+![Image](../master/screenshots/BI-query3.png?raw=true)
 
 - Notice that for these queries Hive view provides the option to view Visual Explain of the query for performance tuning.
-![Image](../master/screenshots/hive-visualexplain.png?raw=true)
+![Image](../master/screenshots/lab/vizexplain-bi.png?raw=true)
 
-- Also notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
-![Image](../master/screenshots/hive-tezgraph.png?raw=true)
+- If you run the query as it1 user, you will notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
+![Image](../master/screenshots/lab/tezview-it.png?raw=true)
 
+- Finally notice how Ranger is keeping audit i.e. keeping tab of what user is accessing what resource across Hadoop components, and how it provides a single pane view to set authorization policies and review audits across components
+http://sandbox.hortonworks.com:6080/index.html#!/reports/audit/bigData
 -----------------------
 
 ##### What to try next?
