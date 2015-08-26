@@ -216,6 +216,7 @@ stored as orc
   - you can click the 'refresh' icon next to the Database explorer and click on default database to confirm the new table was created.
   - you can click on the 'list' icon next to each table as a shortcut to preview its contents
 
+![Image](../master/screenshots/lab/persons-staging.png?raw=true)
 
 - Sqoop will require the MySQL password (empty in this case). Put empty password file into HDFS
 ```
