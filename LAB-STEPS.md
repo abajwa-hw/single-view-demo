@@ -661,7 +661,7 @@ Notice the last 2 field contains the browsing and Tweet history:
 
 - Finally notice how Ranger is keeping audit: http://sandbox.hortonworks.com:6080/index.html#!/reports/audit/bigData
   - Ranger is keeping tab of what user is accessing what resource across Hadoop components
-  - Ranger also provides a single pane view to set authorization policies and review audits across components:
+  - Ranger also provides a single pane view to set authorization policies and review audits across Hadoop
 
 ![Image](../master/screenshots/lab/ranger-audits.png?raw=true)
 
