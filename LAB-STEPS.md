@@ -344,6 +344,8 @@ beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 show tables;
 "
 ```
+![Image](../master/screenshots/lab/showtables.png?raw=true)
+
 - Now login to Ranger UI as admin/admin and create a policy for Marketing to access default db and persons_view table
   - Open http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies and click Add New Policy
   - Create a policy with below details:
