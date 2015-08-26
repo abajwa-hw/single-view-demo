@@ -475,6 +475,7 @@ tail -F /tmp/webtraffic.log
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
   - You may see the below errors. These are caused by Ambari Metrics service being down and can be ignored.
+  
   ```
   I/O exception (java.net.ConnectException) caught when processing request: Connection refused
   Unable to send metrics to collector by address:http://sandbox.hortonworks.com:6188/ws/v1/timeline/metrics
