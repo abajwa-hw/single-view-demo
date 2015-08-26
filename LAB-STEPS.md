@@ -321,7 +321,6 @@ truncate table persons_staging;
 - Verify the record was also updated in final table
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-
 select bdate from persons where people_id=619561879
 ;
 "
