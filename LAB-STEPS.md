@@ -659,8 +659,11 @@ Notice the last 2 field contains the browsing and Tweet history:
 ![Image](../master/screenshots/lab/tezview-it.png?raw=true)
 
 
-- Finally notice how Ranger is keeping audit i.e. keeping tab of what user is accessing what resource across Hadoop components, and how it provides a single pane view to set authorization policies and review audits across components
+- Finally notice how Ranger is keeping audit i.e. keeping tab of what user is accessing what resource across Hadoop components, and how it provides a single pane view to set authorization policies and review audits across components:
 http://sandbox.hortonworks.com:6080/index.html#!/reports/audit/bigData
+
+![Image](../master/screenshots/lab/ranger-audits.png?raw=true)
+
 -----------------------
 
 ##### What to try next?
