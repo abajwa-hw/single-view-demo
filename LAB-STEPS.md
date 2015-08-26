@@ -132,14 +132,20 @@ ssh root@sandbox.hortonworks.com
 
 - In Ambari follow steps below:
   - Create users with admin privileges:
-    - mktg1 -  password: admin
-    - it1 - password: admin
+    - it1  password: admin
 
   ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser2.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser3.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser4.png?raw=true)
-  ![Image](../master/screenshots/lab/ambari-adduser5.png?raw=true)
+  
+    - Create non-admin user:
+      - mktg1 password: admin
+
+  ![Image](../master/screenshots/lab/ambari-mktg1-user-1.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-mktg1-user-2.png?raw=true)
+  ![Image](../master/screenshots/lab/ambari-mktg1-user-3.png?raw=true)
+
   
   - Note in a real scenario, these users would be part of LDAP/AD and Ambari would simply authenticate against it.
   
@@ -649,6 +655,7 @@ Notice the last 2 field contains the browsing and Tweet history:
 
 - If you run the query as it1 user, you will notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
 ![Image](../master/screenshots/lab/tezview-it.png?raw=true)
+
 
 - Finally notice how Ranger is keeping audit i.e. keeping tab of what user is accessing what resource across Hadoop components, and how it provides a single pane view to set authorization policies and review audits across components
 http://sandbox.hortonworks.com:6080/index.html#!/reports/audit/bigData
