@@ -322,6 +322,7 @@ truncate table persons_staging;
 ```
 select bdate from persons where people_id=619561879;
 ```
+ ![Image](../master/screenshots/lab/bdate-query.png?raw=true)
 
 - As it1, create persons table view with masked SSN
 
