@@ -625,6 +625,8 @@ analyze table webtraffic partition(year,month,day) compute statistics for column
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 select count(*) from persons_view;
+select count(*) from webtraffic_view;
+select count(*) from user_tweets_view;
 "
 ```
 returns 400 rows
