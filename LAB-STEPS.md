@@ -246,6 +246,8 @@ sqoop job -delete persons_staging
 
 - Login to Hive view as it1 and verify that 400 records created in persons_staging: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
+![Image](../master/screenshots/lab/persons-staging-count.png?raw=true)
+
 
 - Create persons (final) table in hive 
 ```
