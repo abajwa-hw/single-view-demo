@@ -627,7 +627,7 @@ where w.id = p.people_id;
 "
 ```
 Notice the last field contains the browsing history:
-![Image](../master/screenshots/BI-query1.png?raw=true)
+![Image](../master/screenshots/lab/BI-query1.png?raw=true)
 
 - Correlate tweets with PII data
 ```
@@ -638,7 +638,7 @@ where t.userid = p.people_id;
 "
 ```
 Notice the last field contains the Tweet history:
-![Image](../master/screenshots/BI-query2.png?raw=true)
+![Image](../master/screenshots/lab/BI-query2.png?raw=true)
 
 - Correlate all 3
 ```
@@ -650,7 +650,7 @@ order by p.last4ssn;
 "
 ```
 Notice the last 2 field contains the browsing and Tweet history:
-![Image](../master/screenshots/BI-query3.png?raw=true)
+![Image](../master/screenshots/lab/BI-query3.png?raw=true)
 
 - Notice that for these queries Hive view provides the option to view Visual Explain of the query for performance tuning.
 ![Image](../master/screenshots/lab/vizexplain-bi.png?raw=true)
