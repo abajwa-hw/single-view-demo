@@ -269,6 +269,7 @@ TBLPROPERTIES ('transactional'='true')
 ;
 "
 ```
+![Image](../master/screenshots/lab/persons.png?raw=true)
 
 - Move data from staging table to final table. 
   - first remove the records from final table that are also found in staging table
