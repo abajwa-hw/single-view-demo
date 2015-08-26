@@ -141,6 +141,8 @@ ssh root@sandbox.hortonworks.com
   
     - Create non-admin user:
       - mktg1 password: admin
+      - under permissions: add readonly permission to mktg1
+      - under views: Navigate to Hive > Hive > Under 'Permissions' grant mktg1 access to Hive view
 
   ![Image](../master/screenshots/lab/ambari-mktg1-user-1.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-mktg1-user-2.png?raw=true)
