@@ -98,7 +98,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 ![Image](../master/screenshots/screenshot-hiveview-start.png?raw=true)
 
-- Optional: point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
+- Optional: Not needed on 2.3 sandbox. Point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
 ```
 wget http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.31/mysql-connector-java-5.1.31.jar -O /tmp/mysql-connector-java-5.1.31.jar 
 cp -a /tmp/mysql-connector-java-5.1.31.jar  /usr/share/java/
@@ -242,11 +242,6 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtra
 
 ##### Part 4: Import tweets for users into Hive ORC table via Storm
 
-- Install maven from epel (*or [as an Ambari Service](https://github.com/randerzander/maven-service) or [manually](https://gist.github.com/seanorama/532caf72797a31f1a856)*)
-```
-curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
-yum -y install apache-maven
-```
 - Make hive config changes to enable transactions, if not already done above
 ```
 hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
@@ -262,13 +257,13 @@ create table if not exists user_tweets (twitterid string, userid int, displaynam
 ![Image](../master/screenshots/create-usertweets-table.png?raw=true)
 
 
-- Run below
-```
-sudo -u hdfs hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
-```
-
 - Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
 ```
+#Install maven from epel 
+curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
+yum -y install apache-maven
+
+#build storm jar
 cd /root/hdp22-hive-streaming
 mvn package
 ```
