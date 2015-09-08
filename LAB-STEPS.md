@@ -47,7 +47,7 @@ ssh root@sandbox.hortonworks.com
   service ranger-admin start
   ```
   
-  - Install maven from epel
+  - (Optional) Install maven from epel. This is only needed if you will not be using the vanilla storm jar (i.e. if you will be recompiling the storm jar)
   
   ```
 	curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
