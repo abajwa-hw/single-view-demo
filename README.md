@@ -55,10 +55,10 @@ ssh root@sandbox.hortonworks.com
 
   
 - In Ambari, under Hive config: make the below compactor/interactive query config changes and restart Hive
+  - you may need to enable "Start Tez session at initialization" and restart Hive before you see your newly created hive queues in the drop down.
 ![Image](../master/screenshots/hive-config-compactor.png?raw=true)
 ![Image](../master/screenshots/hive-config-interactivequery.png?raw=true)
 
-  - you may need to enable "Start Tez session at initialization" and restart Hive before you see your newly created hive queues in the drop down.
   - you can also search for the properties using its full name:
     - hive.compactor.initiator.on=true
     - hive.compactor.worker.threads = 2
