@@ -30,14 +30,22 @@ Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-
 ssh root@sandbox.hortonworks.com
 ```
 
-- Open YARN Queue Manager view: http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE 
-- Use the view to setup YARN queues:
-  - allocate half the capacity of the cluster to hive (with other half going to default)
-  - subdivide the hive queue into 2 queues: hive1 and hive2
-  - on each subqueue, set user-limit-factor=4
-  - Click Actions > Save and refresh configs
+- Setup/configure 'batch' and 'default' YARN queues using 'YARN Queue Manager' view in Ambari (login as admin/admin): http://sandbox.hortonworks.com:8080/#/main/views/CAPACITY-SCHEDULER/1.0.0/AUTO_CS_INSTANCE
+  - For the default queue, make the below changes:
+    - Capacity: 50%
+    - Maximum AM Resource: 30%
+    - Queue mappings: g:IT:batch,g:Marketing:default
+    - User limit: 2 
+    - ordering policy: set to fair
+    - max capacity: 100%
+  ![Image](../master/screenshots/default-queue.png?raw=true)
+  
+  - Create a batch queue at the same level as default queue (first highlight root queue, then click "Add Queue") and ensure the below are set changes:
+    - Capacity: 50%  
+    - max capacity: 50%
+  ![Image](../master/screenshots/batch-queue.png?raw=true)
 
-![Image](../master/screenshots/screenshot-capacity-scheduler-view.png?raw=true)
+  - Actions > Save and refresh queues > Save changes. This should start a 'Refresh Yarn Capacity Scheduler' operation
 
 - In Ambari, under YARN config: make the below pre-emption config changes,Save and restart YARN
 
