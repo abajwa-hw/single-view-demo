@@ -116,7 +116,7 @@ ls -la /usr/share/java/my*
 
 - Import data from MySQL to Hive ORC table using Sqoop. From the terminal shell run:
 ```
-sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table 
+sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table  --driver com.mysql.jdbc.Driver
 ```
 Note: if importing large files you should also add the following argument: --fetch-size -2147483648
 
