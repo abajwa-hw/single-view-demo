@@ -523,7 +523,7 @@ create table if not exists user_tweets (twitterid string, userid int, displaynam
 
 
 
-- Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
+- Build the storm uber jar (may take 10-15min first time). 
 ```
 cd ~/hdp22-hive-streaming
 #set JAVA_HOME e.g. /usr/lib/jvm/java-1.7.0-openjdk.x86_64
@@ -531,6 +531,12 @@ export JAVA_HOME=<your JAVA_HOME>
 mvn package
 ```
 
+  - In case you encounter build errors, point maven to hortonworks nexus using steps below and re-run the `mvn package` command
+  ```
+  mkdir ~/.m2
+  wget https://gist.githubusercontent.com/abajwa-hw/7cdfc0bf6b2774ae7ccf/raw/16abe28ceb9452d2cf3a69405b1ad3cd74fc04dc/settings.xml -O ~/.m2/settings.xml  
+  ```
+  
 - Using Ambari, make sure Storm has maintenance mode turned off and is started  (it is stopped by default on the sandbox) and twitter_topology does not already exist
 - Open up the Storm webview or Storm webui
   - http://sandbox.hortonworks.com:8080/#/main/views/Storm_Monitoring/0.1.0/Storm
