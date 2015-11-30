@@ -50,8 +50,8 @@ ssh root@sandbox.hortonworks.com
   - (Optional) Install maven from epel. This is only needed if you will not be using the vanilla storm jar (i.e. if you will be recompiling the storm jar)
   
   ```
-	curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
-	yum -y install apache-maven ntp
+  curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
+  yum -y install apache-maven-3.2* ntp
   ```
   - In case your system time is not accurate, fix it to avoid errors from Twitter4J
   
@@ -526,6 +526,8 @@ create table if not exists user_tweets (twitterid string, userid int, displaynam
 - Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
 ```
 cd ~/hdp22-hive-streaming
+#set JAVA_HOME e.g. /usr/lib/jvm/java-1.7.0-openjdk.x86_64
+export JAVA_HOME=<your JAVA_HOME>
 mvn package
 ```
 
