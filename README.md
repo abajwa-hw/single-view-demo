@@ -410,6 +410,7 @@ Starting HDP 2.3.2, the Hive view includes a Vizualization tab (4th icon down on
   - Here is an example showing user tweets by city
 ![Image](../master/screenshots/hiveview-tweets-viz.png?raw=true)
 
+- You can use this view to explore the results of the hive queries visually as different charts.
 
 -----------------------
 
