@@ -63,7 +63,9 @@ ssh root@sandbox.hortonworks.com
     - hive.compactor.initiator.on=true
     - hive.compactor.worker.threads = 2
     - hive.server2.tez.initialize.default.sessions = true
-        
+    - hive.server2.tez.default.queues=hiveserver.hive1,hiveserver.hive2
+    
+    
 
 - Further reading:
   - More details on Hive streaming ingest can be found here: https://cwiki.apache.org/confluence/display/Hive/Streaming+Data+Ingest
@@ -104,6 +106,13 @@ http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 
 ![Image](../master/screenshots/screenshot-hiveview-start.png?raw=true)
 
+- Optional: Not needed on 2.3 sandbox. Point Sqoop to a newer version of mysql connector. This is a workaround needed when importing large files using Sqoop, to avoid "GC overhead limit exceeded" error.  See [SQOOP-1617](https://issues.apache.org/jira/browse/SQOOP-1617) and [SQOOP-1400](https://issues.apache.org/jira/browse/SQOOP-1400) for more info
+```
+wget http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.31/mysql-connector-java-5.1.31.jar -O /tmp/mysql-connector-java-5.1.31.jar 
+cp -a /tmp/mysql-connector-java-5.1.31.jar  /usr/share/java/
+ln -sf /usr/share/java/mysql-connector-java-5.1.31.jar /usr/share/java/mysql-connector-java.jar
+ls -la /usr/share/java/my*
+```
 
 - Create HDFS home dir for root user
 ```
@@ -114,6 +123,7 @@ sudo -u hdfs hadoop fs -chown root /user/root
 ```
 sqoop import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --hcatalog-table persons --hcatalog-storage-stanza "stored as orc" -m 1 --create-hcatalog-table  --driver com.mysql.jdbc.Driver
 ```
+Note: if importing large files you should also add the following argument: --fetch-size -2147483648
 
 - Now re-open the Hive view and notice that the persons table was created and has data
 
@@ -205,7 +215,7 @@ tail -F /var/log/flume/flume-agent.log
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SOURCE, name: webserver: Successfully registered new MBean.
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
 ```
-  
+
 - Using another terminal window, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
 cd ~/hdp22-hive-streaming
@@ -227,13 +237,6 @@ tail -F /tmp/webtraffic.log
 ```
 02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
 ```
-  - You may see the below errors. These are caused by Ambari Metrics service being down and can be ignored.
-  
-  ```
-  I/O exception (java.net.ConnectException) caught when processing request: Connection refused
-  Unable to send metrics to collector by address:http://sandbox.hortonworks.com:6188/ws/v1/timeline/metrics
-  ```
-  
 - After 6-7min, notice that the script has completed and the webtraffic table now has records created
 
 http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
@@ -252,6 +255,12 @@ http://sandbox.hortonworks.com:8000/filebrowser/view//apps/hive/warehouse/webtra
 
 ##### Part 4: Import tweets for users into Hive ORC table via Storm
 
+- Make hive config changes to enable transactions, if not already done above
+```
+hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
+hive.compactor.initiator.on = true
+hive.compactor.worker.threads > 0 
+```
 - Add your Twitter consumer key/secret, token/secret under [hdp22-hive-streaming/src/test/HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L40)
 
 - Create hive table for tweets that has transactions turned on and ORC enabled
@@ -261,20 +270,12 @@ create table if not exists user_tweets (twitterid string, userid int, displaynam
 ![Image](../master/screenshots/create-usertweets-table.png?raw=true)
 
 
-- Install maven to build storm jar
-```
+- Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
 ```
 #Install maven from epel 
 curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
 yum -y install apache-maven-3.2*
 
-#Point maven to hortonworks nexus repo
-mkdir ~/.m2
-wget https://gist.githubusercontent.com/abajwa-hw/7cdfc0bf6b2774ae7ccf/raw/16abe28ceb9452d2cf3a69405b1ad3cd74fc04dc/settings.xml -O ~/.m2/settings.xml  
-```
-
-- Build the storm uber jar (may take 10-15min first time)
-```
 #build storm jar
 cd /root/hdp22-hive-streaming
 mvn package
@@ -318,6 +319,15 @@ storm kill twitter_topology
 - After a few seconds, navigate to Hive view and query the user_tweets table and notice it now contains tweets
 ![Image](../master/screenshots/screenshot-hiveview-usertweets.png?raw=true)
 
+  - You may encounter the below error through Hue when browsing this table. This is because in this version, Hue beeswax does not support UTF-8 and there were such characters present in the tweets
+```
+'ascii' codec can't decode byte 0xf0 in position 62: ordinal not in range(128)
+```
+  - To workaround replace ```default_filters=['unicode', 'escape'],``` with ```default_filters=['decode.utf8', 'unicode', 'escape'],``` in /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
+```
+cp  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py  /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py.orig
+sed -i "s/default_filters=\['unicode', 'escape'\],/default_filters=\['decode.utf8', 'unicode', 'escape'\],/g" /usr/lib/hue/desktop/core/src/desktop/lib/django_mako.py
+```
 
 - Open Files view and navigate to /apps/hive/warehouse/user_tweets: http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
@@ -396,21 +406,6 @@ Notice the last 2 field contains the browsing and Tweet history:
 
 - Also notice that for these queries Hive view provides the option to view Tez graphical view to help aid debugging.
 ![Image](../master/screenshots/hive-tezgraph.png?raw=true)
-
-##### Use Hive view for Visual Analysis
-
-Starting HDP 2.3.2, the Hive view includes a Vizualization tab (4th icon down on the left hand side)
-
-- The 'Data explorer' tab allows users to explore the data contained in each column:
-![Image](../master/screenshots/hiveview-data-explorer.png?raw=true)
-
-- The 'Advanced Visualization' tab allows users to create graph/charts by specifying what field to show on x-axis and y-axis
-  - Here is an example showing browsing history of users by city
-![Image](../master/screenshots/hiveview-history-viz.png?raw=true)
-
-  - Here is an example showing user tweets by city
-![Image](../master/screenshots/hiveview-tweets-viz.png?raw=true)
-
 
 -----------------------
 
