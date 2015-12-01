@@ -263,7 +263,6 @@ create table if not exists user_tweets (twitterid string, userid int, displaynam
 
 - Install maven to build storm jar
 ```
-```
 #Install maven from epel 
 curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
 yum -y install apache-maven-3.2*
