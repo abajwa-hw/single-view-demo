@@ -1,9 +1,10 @@
-## Hive streaming workshop
-This demo is part of a 'Interactive Query with Apache Hive' webinar.
+## EDW optimization and Single view lab
 
-The webinar recording and slides are available at http://hortonworks.com/partners/learn/#hive
 
-Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/README-22.md)
+- Goals:
+  - EDW optimization: demonstrate how you can bulk import data from EDW/RDBMS into Hive and then incrementally keep the Hive tables updated periodically 
+  - Single view: demonstrate how you can use Hive to get a single view of product by combining ETL/CRM data from EDW/DB, along with web traffic and social media data (collected using HDF)
+
 
 #### Demo overview
 In this lab we model a hadoop cluster with 2 tenants, IT & Marketing.  IT is responsible for onboarding data while Marketing is responsible of running analytical queries.  IT jobs are batch oriented while Marketing queries are typically interactive in nature.  The lab includes steps for setting queues, onboarding data, applying security and running analytical queries.  For the lab, we allocate cluster capacity equally between IT and Marketing.
@@ -485,7 +486,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 ------------------------
 
 
-##### Part 4: Import tweets for users into Hive ORC table via Storm
+##### Part 4: Import tweets for users into Hive via Nifi
 
 
 - Twitter4J requires you to have a Twitter account and obtain developer keys by registering an "app". Create a Twitter account and app and get your consumer key/token and access keys/tokens:
@@ -495,81 +496,9 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
   - fill anything
   - create access tokens
 
-- Add your Twitter consumer key/secret, token/secret under [single-view-demo/src/test/HiveTopology.java](https://github.com/abajwa-hw/single-view-demo/blob/master/src/test/HiveTopology.java#L40)
 
-- Create hive table for tweets that has transactions turned on and ORC enabled
-```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-create table if not exists user_tweets (twitterid string, userid int, displayname string, created string, language string, tweet string) clustered by (userid) into 7 buckets stored as orc tblproperties('orc.compress'='NONE','transactional'='true')
-;
-"
-```
-![Image](../master/screenshots/create-usertweets-table.png?raw=true)
-
-
-- Point maven to hortonworks nexus repo
-```
-mkdir ~/.m2
-wget https://gist.githubusercontent.com/abajwa-hw/7cdfc0bf6b2774ae7ccf/raw/16abe28ceb9452d2cf3a69405b1ad3cd74fc04dc/settings.xml -O ~/.m2/settings.xml  
-```
-
-- Build the storm uber jar using maven (may take 10-15min first time). 
-```
-cd ~/single-view-demo
-#set JAVA_HOME e.g. /usr/lib/jvm/java-1.7.0-openjdk.x86_64
-export JAVA_HOME=<your JAVA_HOME>
-mvn package
-```
-
-  
-- Using Ambari, make sure Storm has maintenance mode turned off and is started  (it is stopped by default on the sandbox) and twitter_topology does not already exist
-- Open up the Storm webview or Storm webui
-  - http://sandbox.hortonworks.com:8080/#/main/views/Storm_Monitoring/0.1.0/Storm
-  - http://sandbox.hortonworks.com:8744/
-  
-![Image](../master/screenshots/screenshot-storm-home.png?raw=true)
-
-- Run the topology on the cluster and notice twitter_topology appears on Storm webui
-```
-cd ~/single-view-demo
-storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
-```
-
-Note: to run in local mode (ie without submitting it to cluster), run the above without the twitter_topology argument
-
-- In Storm view or UI, drill down into the topology to see the details and refresh periodically. The numbers under emitted, transferred and acked should start increasing.
-![Image](../master/screenshots/screenshot-storm-topology.png?raw=true)
-
-In Storm view or UI, you can also click on "Show Visualization" under "Topology Visualization" to see the topology visually
-![Image](../master/screenshots/screenshot-storm-visualization.png?raw=true)
-
-![Image](../master/screenshots/storm-view-twittertopology.png?raw=true)
-
-- After 20-30 seconds, kill the topology from the Storm UI or using the command below to avoid overloading the VM
-```
-storm kill twitter_topology
-```
-
-- After a few seconds, navigate to Hive view and query the user_tweets table and notice it now contains tweets
-![Image](../master/screenshots/screenshot-hiveview-usertweets.png?raw=true)
-
-
-- Open Files view and navigate to /apps/hive/warehouse/user_tweets/delta_xxxx/bucket_xxxx: http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
-
-![Image](../master/screenshots/screenshot-filesview-usertweets-HDFS.png?raw=true)
-
-- Notice the table is stored in ORC format
-
-![Image](../master/screenshots/screenshot-filesview-usertweets-HDFS-ORC.png?raw=true)
-
-- Troubleshooting:
-  - In case no tweets appear after 30s, double check that you added 'hive' user to the 'IT group permission on default DB' policy you created at the start
-  
-- (Optional) In case you want to empty the table for future runs, you can run below 
-```
-delete from user_tweets;
-```
-Note: the 'delete from' command are only supported in 2.2 when Hive transactions are turned on)
+- Follow steps from earlier lab to install Nifi via Ambari, monitor certain tweets and push to Hive/Solr:
+https://community.hortonworks.com/articles/1282/sample-hdfnifi-flow-to-push-tweets-into-solrbanana.html
 
 ----------------
 
@@ -674,15 +603,5 @@ Notice the last 2 field contains the browsing and Tweet history:
 -----------------------
 
 ##### What to try next?
-
-- Enhance the sample Twitter Storm topology
-  - Import the above Storm sample into Eclipse on the sandbox VM using an *Ambari stack for VNC* and use the Maven plugin to compile the code. Steps available at https://github.com/abajwa-hw/vnc-stack
-  - Update [HiveTopology.java](https://github.com/abajwa-hw/single-view-demo/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets
-  - Add other Bolts to this basic topology to process the Tweets (e.g. rolling count) and write them to different components (like HBase, Solr etc). Here is a HDP 2.2 sample project showing a more complicated topology with Tweets being generated from a Kafka producer and being emitted into local filesystem, HDFS, Hive, Solr and HBase: https://github.com/abajwa-hw/hdp22-twitter-demo 
-  
-- Use Sqoop to import data into ORC tables from other databases (e.g. Oracle, MSSQL etc). See [this blog entry](http://hortonworks.com/hadoop-tutorial/import-microsoft-sql-server-hortonworks-sandbox-using-sqoop/) for more details
-
-- Experiment with Flume
-  - Change the Flume configuration to use different channels (e.g. FileChannel or Spillable Memory Channel) or write to different sinks (e.g HBase). See the [Flume user guide](http://flume.apache.org/FlumeUserGuide.html) for more details.
   
 

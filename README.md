@@ -1,8 +1,4 @@
 ## HDP Single view demo
-This demo is part of a 'Interactive Query with Apache Hive' webinar.
-
-The webinar recording and slides are available at http://hortonworks.com/partners/learn/#hive
-
 
 
 #### Lab overview
@@ -17,9 +13,13 @@ In this lab we demonstrate how HDP sandbox can be used to build a single view of
 
 
 
-#### Labs
+#### Lab
 
 - Lab for HDP 2.3 sandbox/PostGres can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-psql-advanced-23.md)
+
+
+#### Older labs
+
 - Lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-advanced-23.md)
 - Basic lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-basic-23.md)
 - Basic lab for HDP 2.2 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-basic-22.md)
