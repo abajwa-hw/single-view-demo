@@ -5,13 +5,13 @@ The webinar recording and slides are available at http://hortonworks.com/partner
 
 #### Demo overview
 
-1. [Start HDP 2.2 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#part-1---start-sandbox-vm-and-enable-hive-features)
-2. [Sqoop - import PII data of users from MySql into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
-3. [Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
-4. [Storm - import tweets for those users into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
-5. [Analyze tables to populate statistics](https://github.com/abajwa-hw/hdp22-hive-streaming#part-5-analyze-table-to-populate-statistics)
-6. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/hdp22-hive-streaming#part-6-run-hive-query-to-correlate-the-data-from-thee-different-sources)
-7. [What to try next?](https://github.com/abajwa-hw/hdp22-hive-streaming#what-to-try-next)
+1. [Start HDP 2.2 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/single-view-demo#part-1---start-sandbox-vm-and-enable-hive-features)
+2. [Sqoop - import PII data of users from MySql into Hive ORC table](https://github.com/abajwa-hw/single-view-demo#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
+3. [Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table](https://github.com/abajwa-hw/single-view-demo#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
+4. [Storm - import tweets for those users into Hive ORC table](https://github.com/abajwa-hw/single-view-demo#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
+5. [Analyze tables to populate statistics](https://github.com/abajwa-hw/single-view-demo#part-5-analyze-table-to-populate-statistics)
+6. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/single-view-demo#part-6-run-hive-query-to-correlate-the-data-from-thee-different-sources)
+7. [What to try next?](https://github.com/abajwa-hw/single-view-demo#what-to-try-next)
 
 Note: the recommended way to run the SQL queries mentioned below is using Beeline client
 ```
@@ -95,11 +95,11 @@ More details on the above parameters can be found in the webinar slides, availab
 - Pull the latest Hive streaming code/scripts
 ```
 cd
-git clone https://github.com/abajwa-hw/hdp22-hive-streaming.git 
+git clone https://github.com/abajwa-hw/single-view-demo.git 
 ```
 - Inspect CSV of user personal data
 ```
-cat ~/hdp22-hive-streaming/data/PII_data_small.csv
+cat ~/single-view-demo/data/PII_data_small.csv
 ```
 - Import users personal data into MySQL
 ```
@@ -109,7 +109,7 @@ mysql -u root -p
 create database people;
 use people;
 create table persons (people_id INT PRIMARY KEY, sex text, bdate DATE, firstname text, lastname text, addresslineone text, addresslinetwo text, city text, postalcode text, ssn text, id2 text, email text, id3 text);
-LOAD DATA LOCAL INFILE '~/hdp22-hive-streaming/data/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/single-view-demo/data/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 ```
 - Now verify that the data was imported
 ```
@@ -218,7 +218,7 @@ tail -F /var/log/flume/flume-agent.log
 
 - Using another terminal window, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
-cd ~/hdp22-hive-streaming
+cd ~/single-view-demo
 ./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
 ```
 - Start tailing the webtraffic file in another terminal
@@ -262,7 +262,7 @@ hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DbTxnManager
 hive.compactor.initiator.on = true
 hive.compactor.worker.threads > 0 
 ```
-- Add your Twitter consumer key/secret, token/secret under [hdp22-hive-streaming/src/test/HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L40)
+- Add your Twitter consumer key/secret, token/secret under [single-view-demo/src/test/HiveTopology.java](https://github.com/abajwa-hw/single-view-demo/blob/master/src/test/HiveTopology.java#L40)
 
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
@@ -275,7 +275,7 @@ sudo -u hdfs hadoop fs -chmod +w /apps/hive/warehouse/user_tweets
 
 - Optional: build the storm uber jar (may take 10-15min first time). You can skip this to use the pre-built jar in the target dir. 
 ```
-cd /root/hdp22-hive-streaming
+cd /root/single-view-demo
 mv pom-22.xml pom.xml
 mvn package
 ```
@@ -295,7 +295,7 @@ http://sandbox.hortonworks.com:8744/
 
 - Run the topology on the cluster and notice twitter_topology appears on Storm webui
 ```
-cd /root/hdp22-hive-streaming
+cd /root/single-view-demo
 storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
 ```
 
@@ -399,7 +399,7 @@ Notice the last 2 field contains the browsing and Tweet history:
 
 - Enhance the sample Twitter Storm topology
   - Import the above Storm sample into Eclipse on the sandbox VM using an *Ambari stack for VNC* and use the Maven plugin to compile the code. Steps available at https://github.com/abajwa-hw/vnc-stack
-  - Update [HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets
+  - Update [HiveTopology.java](https://github.com/abajwa-hw/single-view-demo/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets
   - Add other Bolts to this basic topology to process the Tweets (e.g. rolling count) and write them to different components (like HBase, Solr etc). Here is a HDP 2.2 sample project showing a more complicated topology with Tweets being generated from a Kafka producer and being emitted into local filesystem, HDFS, Hive, Solr and HBase: https://github.com/abajwa-hw/hdp22-twitter-demo 
   
 - Use Sqoop to import data into ORC tables from other databases (e.g. Oracle, MSSQL etc). See [this blog entry](http://hortonworks.com/hadoop-tutorial/import-microsoft-sql-server-hortonworks-sandbox-using-sqoop/) for more details

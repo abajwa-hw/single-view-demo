@@ -3,18 +3,18 @@ This demo is part of a 'Interactive Query with Apache Hive' webinar.
 
 The webinar recording and slides are available at http://hortonworks.com/partners/learn/#hive
 
-Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/README-22.md)
+Instructions for HDP 2.2 can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/README-22.md)
 
 #### Demo overview
 In this lab we model a hadoop cluster with 2 tenants, IT & Marketing.  IT is responsible for onboarding data while Marketing is responsible of running analytical queries.  IT jobs are batch oriented while Marketing queries are typically interactive in nature.  The lab includes steps for setting queues, onboarding data, applying security and running analytical queries.  For the lab, we allocate cluster capacity equally between IT and Marketing.
 
-1. [Start HDP 2.3 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/hdp22-hive-streaming#part-1---start-sandbox-vm-and-enable-hive-features)
-2. [Sqoop - import PII data of users from MySql into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
-3. [Flume - import browsing history of users e.g. userid,webpage,timestamp from simulated weblogs into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
-4. [Storm - import tweets for those users into Hive ORC table](https://github.com/abajwa-hw/hdp22-hive-streaming#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
-5. [Analyze tables to populate statistics](https://github.com/abajwa-hw/hdp22-hive-streaming#part-5-analyze-table-to-populate-statistics)
-6. [Run Hive queries to correlate the data from thee different sources](https://github.com/abajwa-hw/hdp22-hive-streaming#part-6-run-hive-query-to-correlate-the-data-from-thee-different-sources)
-7. [What to try next?](https://github.com/abajwa-hw/hdp22-hive-streaming#what-to-try-next)
+1. [Start HDP 2.3 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/single-view-demo#part-1---start-sandbox-vm-and-enable-hive-features)
+2. [Sqoop - import CRM/ERP data from DB/EDW into Hive](https://github.com/abajwa-hw/single-view-demo#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
+3. [Nifi - Import simulated web traffic logs into Hive](https://github.com/abajwa-hw/single-view-demo#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
+4. [Nifi - import related tweets into Hive](https://github.com/abajwa-hw/single-view-demo#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
+5. [Analyze tables to populate statistics](https://github.com/abajwa-hw/single-view-demo#part-5-analyze-table-to-populate-statistics)
+6. [Use Hive view to correlate the data from multiple data sources](https://github.com/abajwa-hw/single-view-demo#part-6-run-hive-query-to-correlate-the-data-from-thee-different-sources)
+7. [What to try next?](https://github.com/abajwa-hw/single-view-demo#what-to-try-next)
 
 
 ##### Part 1 - Start sandbox VM and tenant onboarding
@@ -42,17 +42,6 @@ ssh root@sandbox.hortonworks.com
 	sudo -u hdfs hadoop fs -chown mktg1:Marketing /user/mktg1
   ```
 
-  - Start Ranger admin service (if not already started)
-  ```
-  service ranger-admin start
-  ```
-  
-  - (Optional) Install maven from epel. This is only needed if you will not be using the vanilla storm jar (i.e. if you will be recompiling the storm jar)
-  
-  ```
-  curl -o /etc/yum.repos.d/epel-apache-maven.repo https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
-  yum -y install apache-maven-3.2* ntp
-  ```
   - In case your system time is not accurate, fix it to avoid errors from Twitter4J
   
   ```
@@ -155,7 +144,7 @@ ssh root@sandbox.hortonworks.com
 
 
 
-##### Part 2 - Import data from MySQL to Hive ORC table via Sqoop 
+##### Part 2 - Import data from PostGres to Hive ORC table via Sqoop 
 
 - Note the hive queries shown below can either
   - run via beeline CLI from your terminal shell prompt or 
@@ -170,171 +159,166 @@ su it1
 - Pull the latest Hive streaming code/scripts
 ```
 cd
-git clone https://github.com/abajwa-hw/hdp22-hive-streaming.git 
+git clone https://github.com/abajwa-hw/single-view-demo.git 
 ```
 - Inspect CSV of user personal data
 ```
-cat ~/hdp22-hive-streaming/data/PII_data_small.csv
-```
-- Import users personal data into MySQL
-```
-mysql -u root -p
-#empty password
-
-create database people;
-use people;
-create table persons (people_id INT PRIMARY KEY, sex text, bdate DATE, firstname text, lastname text, addresslineone text, addresslinetwo text, city text, postalcode text, ssn text, id2 text, email text, id3 text,lastupdate timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP );
-LOAD DATA LOCAL INFILE '~/hdp22-hive-streaming/data/PII_data_small.csv' REPLACE INTO TABLE persons FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
-```
-- In MySQL, verify that the data was imported and exit. 
-```
-select people_id, firstname, lastname, city from persons where lastname='SMITH';
-exit;
+cat ~/single-view-demo/data/PII_data_small.csv
 ```
 
-- Create the staging table in Hive
+- 1. Download contoso data set into /tmp on sandbox
+
 ```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-
-create table persons_staging (people_id INT , sex string, bdate DATE, firstname string
-, lastname string
-, addresslineone string
-, addresslinetwo string
-, city string
-, postalcode string
-, ssn string
-, id2 string
-, email string
-, id3 string
-,lastupdate timestamp)
-stored as orc
-;
-"
+cd /tmp
+wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip
+unzip data.zip
 ```
-
-- If using the Hive view, note that:
-  - you can click the 'refresh' icon next to the Database explorer and click on default database to confirm the new table was created.
-  - you can click on the 'list' icon next to each table as a shortcut to preview its contents
-
-![Image](../master/screenshots/lab/persons-staging.png?raw=true)
-
-- Sqoop will require the MySQL password (empty in this case). Put empty password file into HDFS
+- 2. As postgres user, login to Postgres and complete below to setup psql for user it1:
+  - create contoso db
+  - create it1 user
+  - grant privileges on contoso to it1
+  - check user got created
 ```
-touch mysqlpasswd.txt
-hadoop fs -put mysqlpasswd.txt /user/it1
+su postgres
+psql
+create database contoso;
+CREATE USER it1 WITH PASSWORD 'it1';
+GRANT ALL PRIVILEGES ON DATABASE contoso to it1;
+\du
+\q
+exit
 ```
 
-- Create an incremental sqoop job (pointing to password file) 
+- 3. As root, complete below to complete setup of it1 user
+  - enable it1 user to login to psql by editing pg_hba.conf and add a line with: `host all all 127.0.0.1/32 md5`
 ```
-sqoop job -create persons_staging -- import --verbose --connect 'jdbc:mysql://localhost/people' --table persons --username root --password-file hdfs://sandbox.hortonworks.com:8020/user/it1/mysqlpasswd.txt --hcatalog-table persons_staging  -m 1 --check-column lastupdate --incremental lastmodified --last-value '1900-01-01'  --driver com.mysql.jdbc.Driver
+service ambari stop
+service postgresql stop
+echo "host all all 127.0.0.1/32 md5" >> /var/lib/pgsql/data/pg_hba.conf
+service postgresql start
+service ambari start
 ```
-- validate the job got created
-  - this should show available jobs
+  - sudo as hdfs to create home dir for it1 and set ownership
 ```
-sqoop job -list
-```
-
-- Run the first iteration of Sqoop job to import users from MySQL to staging table
-```
-sqoop job -exec persons_staging
-```
-
-- (Optional) In case you made a mistake and need to do it over:
-```
-sqoop job -delete persons_staging
-```
-
-- Login to Hive view as it1 and verify that 400 records created in persons_staging: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
-
-![Image](../master/screenshots/lab/persons-staging-count.png?raw=true)
+sudo -u hdfs hdfs dfs -mkdir /user/it1
+sudo -u hdfs hdfs dfs -chown it1 /user/it1
+```  
 
 
-- Create persons (final) table in hive 
+- 4. As root, setup Sqoop for postgres by downloading the appropriate JDBC jar from [here](https://jdbc.postgresql.org/download.html) e.g. "JDBC42 Postgresql Driver, Version 9.4-1207". Note: to confirm what version of postgres you have, run the following via psql: `SELECT version();`
 ```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-create table persons (people_id INT , sex string, bdate DATE, firstname string
-, lastname string
-, addresslineone string
-, addresslinetwo string
-, city string
-, postalcode string
-, ssn string
-, id2 string
-, email string
-, id3 string
-,lastupdate timestamp)
-clustered by (people_id) into 7 buckets
+wget https://jdbc.postgresql.org/download/postgresql-9.4.1207.jar -P /usr/hdp/current/sqoop-client/lib
+```
+
+----------------------
+
+#### Bulk import of data into Hive from RDBMS
+
+**Next set of steps will be run as it1 user**
+
+- 5. As it1 user connect to psql and create/import data from downloaded sample data (this may take a few minutes)
+```
+su - it1
+export PGPASSWORD=it1
+psql -U it1 -d contoso -h localhost -f contoso-psql.sql
+
+```
+
+- 6. Ensure sqoop can access tables in contoso db as it1 user
+```
+sqoop list-tables --connect jdbc:postgresql://localhost:5432/contoso --username it1 --password it1 -- schema contoso 
+```
+
+- 7. Make sure Hive service is up via Ambari IU and start the bulk load of all the PSql tables into hive (as text) using Sqoop. This will run for some time.
+```
+sqoop import-all-tables --username it1 --password it1 --connect jdbc:postgresql://localhost:5432/contoso  --hive-import  --direct
+```
+
+
+- 8. Ideally we would now convert all tables to final ORC tables in Hive. In this lab, we are showing how to do this for factsales table:
+  - Run below using the Hive view in Ambari (http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive), one sql at a time:
+```
+CREATE TABLE `factsales_final` (
+`SalesKey` int ,
+`DateKey` timestamp ,  
+`channelKey` int ,  
+`StoreKey` int,
+`ProductKey` int,
+`PromotionKey` int,
+`CurrencyKey` int,
+`UnitCost` float,
+`UnitPrice` float,
+`SalesQuantity` int , 
+`ReturnQuantity` int,
+`ReturnAmount` float,
+`DiscountQuantity` int,
+`DiscountAmount` float,
+`TotalCost` float,
+`SalesAmount` float,
+`ETLLoadID` int,
+`LoadDate` timestamp , 
+`UpdateDate` timestamp 
+ )
+clustered by (saleskey) into 7 buckets
 stored as orc
 TBLPROPERTIES ('transactional'='true')
 ;
-"
-```
-![Image](../master/screenshots/lab/persons.png?raw=true)
 
-- Move data from staging table to final table. 
+insert into factsales_final select * from factsales;
+
+```
+#### Incremental import of data into Hive from RDBMS
+
+- Now that we did the one time bulk import, next we will setup an incremental sqoop job
+
+- 9. create password file containing it1 user's password in HDFS. This is done to allow invocations of the job to be automated/scheduled (without having to manually pass the password )
+```
+# use -n to ensure newline is not added
+echo -n "it1" > .password
+hadoop fs -put .password /user/it1/
+rm .password
+```
+- 10. create incremental import sqoop job for factsales table and point it as below: 
+  - --table: table the job is for (i.e. factsales)
+  - --password-file: the HDFS location of the password file
+  - --incremental: lastmodified (we want to use lastmodified logic to find delta records)
+  - --check-column: specify which column that will be used to determine which delta records will be picked up (in this case, records whose updatedate column value is later than 2015-01-01 will be picked up)
+  - see [Sqoop documentation on incremental imports](https://sqoop.apache.org/docs/1.4.2/SqoopUserGuide.html#_incremental_imports) for more details
+```
+sqoop job -create factsales -- import --verbose --connect 'jdbc:postgresql://localhost:5432/contoso' --table factsales -username it1 --password-file hdfs://sandbox.hortonworks.com:8020/user/it1/.password --check-column updatedate --incremental lastmodified --last-value '2015-01-01' --hive-import  --direct
+```
+
+- 11. Update records in factsales table in postgres
+```
+psql -U it1 -d contoso -h localhost -c "update factsales set updatedate = '2016-01-01 00:00:00' where saleskey in (1,2);"
+```
+
+- 12. In Hive, truncate staging table by running below in Hive view
+```
+truncate table factsales;
+```
+
+- 13. run incremental sqoop job for factsales to import updated records from postgres into hive staging table
+```
+sqoop job -exec factsales
+```
+- 14. In Hive, check only records we changed were picked up in the hive staging table
+```
+SELECT * FROM default.factsales;
+```
+- 15. In Hive, move data from staging table to final table (one at a time, using Hive view)
   - first remove the records from final table that are also found in staging table
   - move data from staging table to final table
   - truncate staging table
 ```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-delete from persons where persons.people_id in (select people_id from persons_staging);
-
-insert into persons select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,ssn,id2,email,id3,lastupdate from persons_staging;
-
-truncate table persons_staging;
-"
+delete from factsales_final where saleskey in (select saleskey from factsales);
+insert into factsales_final select * from factsales;
+truncate table factsales;
 ```
 
-- Update existing record **in mysql**. The remaining queries will be run in Hive
+- 16. In Hive, check the records updated in hive final table 
 ```
-mysql -u root -p
-#empty password
-
-use people;
-select bdate from persons where people_id=619561879;
-update persons set bdate='2007-02-02' where people_id=619561879;
-select bdate from persons where people_id=619561879;
-exit
-```
-
-- Run second iteration of sqoop job
-```
-sqoop job -exec persons_staging
-```
-
-- Now look at staging table and it should only show one record with bdate: 2007-02-02
-
- ![Image](../master/screenshots/lab/stagingtable-ssn.png?raw=true)
-
-- Now merge this record back to final table using same SQLs as above:
-```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-
-delete from persons where persons.people_id in (select people_id from persons_staging);
-
-insert into persons select * from persons_staging;
-
-truncate table persons_staging;
-"
-```
-
-- Verify the record was also updated in final table
-```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-select bdate from persons where people_id=619561879
-;
-"
-```
- ![Image](../master/screenshots/lab/bdate-query.png?raw=true)
-
-- As it1, create persons table view with masked SSN
-
-```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-create view persons_view as 
-select people_id,sex,bdate,firstname,lastname,addresslineone,addresslinetwo,city,postalcode,substr(ssn,length(ssn)-3) last4ssn ,id2,email,id3,lastupdate from persons
-;
-"
+select * from  factsales_final where saleskey in (1,2);
 ```
 
 - As mktg1 try to query tables
@@ -377,11 +361,12 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
   - Notice the jobs run as it1 user were routed to the batch queue while the others went to the default queue
  ![Image](../master/screenshots/lab/YARN-UI1.png?raw=true)  
 
+- At this point we have shown how you can bulk import data from EDW/RDBMS into Hive and then incrementally keep the Hive tables updated periodically 
 
 ----------------
 
 
-##### Part 3 - Import web history data from log file to Hive ORC table via Flume 
+##### Part 3 - Import web history data from log file to Hive via Nifi 
 
 - As it1, use beeline or Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
  
@@ -455,7 +440,7 @@ tail -F /var/log/flume/flume-agent.log
 
 - Using another terminal window, as it1 user, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
-cd ~/hdp22-hive-streaming
+cd ~/single-view-demo
 ./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
 ```
 - (Optional) Tailing the webtraffic file in another terminal to see the webtraffic records
@@ -510,7 +495,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
   - fill anything
   - create access tokens
 
-- Add your Twitter consumer key/secret, token/secret under [hdp22-hive-streaming/src/test/HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L40)
+- Add your Twitter consumer key/secret, token/secret under [single-view-demo/src/test/HiveTopology.java](https://github.com/abajwa-hw/single-view-demo/blob/master/src/test/HiveTopology.java#L40)
 
 - Create hive table for tweets that has transactions turned on and ORC enabled
 ```
@@ -530,7 +515,7 @@ wget https://gist.githubusercontent.com/abajwa-hw/7cdfc0bf6b2774ae7ccf/raw/16abe
 
 - Build the storm uber jar using maven (may take 10-15min first time). 
 ```
-cd ~/hdp22-hive-streaming
+cd ~/single-view-demo
 #set JAVA_HOME e.g. /usr/lib/jvm/java-1.7.0-openjdk.x86_64
 export JAVA_HOME=<your JAVA_HOME>
 mvn package
@@ -546,7 +531,7 @@ mvn package
 
 - Run the topology on the cluster and notice twitter_topology appears on Storm webui
 ```
-cd ~/hdp22-hive-streaming
+cd ~/single-view-demo
 storm jar ./target/storm-integration-test-1.0-SNAPSHOT.jar test.HiveTopology thrift://sandbox.hortonworks.com:9083 default user_tweets twitter_topology
 ```
 
@@ -692,7 +677,7 @@ Notice the last 2 field contains the browsing and Tweet history:
 
 - Enhance the sample Twitter Storm topology
   - Import the above Storm sample into Eclipse on the sandbox VM using an *Ambari stack for VNC* and use the Maven plugin to compile the code. Steps available at https://github.com/abajwa-hw/vnc-stack
-  - Update [HiveTopology.java](https://github.com/abajwa-hw/hdp22-hive-streaming/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets
+  - Update [HiveTopology.java](https://github.com/abajwa-hw/single-view-demo/blob/master/src/test/HiveTopology.java#L250) to pass hashtags or languages or locations or Twitter user ids to filter Tweets
   - Add other Bolts to this basic topology to process the Tweets (e.g. rolling count) and write them to different components (like HBase, Solr etc). Here is a HDP 2.2 sample project showing a more complicated topology with Tweets being generated from a Kafka producer and being emitted into local filesystem, HDFS, Hive, Solr and HBase: https://github.com/abajwa-hw/hdp22-twitter-demo 
   
 - Use Sqoop to import data into ORC tables from other databases (e.g. Oracle, MSSQL etc). See [this blog entry](http://hortonworks.com/hadoop-tutorial/import-microsoft-sql-server-hortonworks-sandbox-using-sqoop/) for more details
