@@ -11,8 +11,8 @@ In this lab we model a hadoop cluster with 2 tenants, IT & Marketing.  IT is res
 
 1. [Start HDP 2.3 sandbox and enable Hive features like transactions, queues, preemption, Tez and sessions](https://github.com/abajwa-hw/single-view-demo#part-1---start-sandbox-vm-and-enable-hive-features)
 2. [Sqoop - import CRM/ERP data from DB/EDW into Hive](https://github.com/abajwa-hw/single-view-demo#part-2---import-data-from-mysql-to-hive-orc-table-via-sqoop)
-3. [Nifi - Import simulated web traffic logs into Hive](https://github.com/abajwa-hw/single-view-demo#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
-4. [Nifi - import related tweets into Hive](https://github.com/abajwa-hw/single-view-demo#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
+3. [Nifi - import related tweets into Hive](https://github.com/abajwa-hw/single-view-demo#part-4-import-tweets-for-users-into-hive-orc-table-via-storm) 
+4. [Nifi - Import simulated web traffic logs into Hive](https://github.com/abajwa-hw/single-view-demo#part-3---import-web-history-data-from-log-file-to-hive-orc-table-via-flume) 
 5. [Analyze tables to populate statistics](https://github.com/abajwa-hw/single-view-demo#part-5-analyze-table-to-populate-statistics)
 6. [Use Hive view to correlate the data from multiple data sources](https://github.com/abajwa-hw/single-view-demo#part-6-run-hive-query-to-correlate-the-data-from-thee-different-sources)
 7. [What to try next?](https://github.com/abajwa-hw/single-view-demo#what-to-try-next)
@@ -167,14 +167,14 @@ git clone https://github.com/abajwa-hw/single-view-demo.git
 cat ~/single-view-demo/data/PII_data_small.csv
 ```
 
-- 1. Download contoso data set into /tmp on sandbox
+- Download contoso (retail) data set into /tmp on sandbox
 
 ```
 cd /tmp
 wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip
 unzip data.zip
 ```
-- 2. As postgres user, login to Postgres and complete below to setup psql for user it1:
+- As postgres user, login to Postgres and complete below to setup psql for user it1:
   - create contoso db
   - create it1 user
   - grant privileges on contoso to it1
@@ -190,7 +190,7 @@ GRANT ALL PRIVILEGES ON DATABASE contoso to it1;
 exit
 ```
 
-- 3. As root, complete below to complete setup of it1 user
+- As root, complete below to complete setup of it1 user
   - enable it1 user to login to psql by editing pg_hba.conf and add a line with: `host all all 127.0.0.1/32 md5`
 ```
 service ambari stop
@@ -206,7 +206,7 @@ sudo -u hdfs hdfs dfs -chown it1 /user/it1
 ```  
 
 
-- 4. As root, setup Sqoop for postgres by downloading the appropriate JDBC jar from [here](https://jdbc.postgresql.org/download.html) e.g. "JDBC42 Postgresql Driver, Version 9.4-1207". Note: to confirm what version of postgres you have, run the following via psql: `SELECT version();`
+- As root, setup Sqoop for postgres by downloading the appropriate JDBC jar from [here](https://jdbc.postgresql.org/download.html) e.g. "JDBC42 Postgresql Driver, Version 9.4-1207". Note: to confirm what version of postgres you have, run the following via psql: `SELECT version();`
 ```
 wget https://jdbc.postgresql.org/download/postgresql-9.4.1207.jar -P /usr/hdp/current/sqoop-client/lib
 ```
@@ -217,7 +217,7 @@ wget https://jdbc.postgresql.org/download/postgresql-9.4.1207.jar -P /usr/hdp/cu
 
 **Next set of steps will be run as it1 user**
 
-- 5. As it1 user connect to psql and create/import data from downloaded sample data (this may take a few minutes)
+- As it1 user connect to psql and create/import data from downloaded sample data (this may take a few minutes)
 ```
 su - it1
 export PGPASSWORD=it1
@@ -225,18 +225,18 @@ psql -U it1 -d contoso -h localhost -f contoso-psql.sql
 
 ```
 
-- 6. Ensure sqoop can access tables in contoso db as it1 user
+- Ensure sqoop can access tables in contoso db as it1 user
 ```
 sqoop list-tables --connect jdbc:postgresql://localhost:5432/contoso --username it1 --password it1 -- schema contoso 
 ```
 
-- 7. Make sure Hive service is up via Ambari IU and start the bulk load of all the PSql tables into hive (as text) using Sqoop. This will run for some time.
+- Make sure Hive service is up via Ambari IU and start the bulk load of all the PSql tables into hive (as text) using Sqoop. This will run for some time.
 ```
 sqoop import-all-tables --username it1 --password it1 --connect jdbc:postgresql://localhost:5432/contoso  --hive-import  --direct
 ```
 
 
-- 8. Ideally we would now convert all tables to final ORC tables in Hive. In this lab, we are showing how to do this for factsales table:
+- Ideally we would now convert all tables to final ORC tables in Hive. In this lab, we are showing how to do this for factsales table:
   - Run below using the Hive view in Ambari (http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive), one sql at a time:
 ```
 CREATE TABLE `factsales_final` (
@@ -272,14 +272,14 @@ insert into factsales_final select * from factsales;
 
 - Now that we did the one time bulk import, next we will setup an incremental sqoop job
 
-- 9. create password file containing it1 user's password in HDFS. This is done to allow invocations of the job to be automated/scheduled (without having to manually pass the password )
+- create password file containing it1 user's password in HDFS. This is done to allow invocations of the job to be automated/scheduled (without having to manually pass the password )
 ```
 # use -n to ensure newline is not added
 echo -n "it1" > .password
 hadoop fs -put .password /user/it1/
 rm .password
 ```
-- 10. create incremental import sqoop job for factsales table and point it as below: 
+- create incremental import sqoop job for factsales table and point it as below: 
   - --table: table the job is for (i.e. factsales)
   - --password-file: the HDFS location of the password file
   - --incremental: lastmodified (we want to use lastmodified logic to find delta records)
@@ -289,25 +289,25 @@ rm .password
 sqoop job -create factsales -- import --verbose --connect 'jdbc:postgresql://localhost:5432/contoso' --table factsales -username it1 --password-file hdfs://sandbox.hortonworks.com:8020/user/it1/.password --check-column updatedate --incremental lastmodified --last-value '2015-01-01' --hive-import  --direct
 ```
 
-- 11. Update records in factsales table in postgres
+- Update records in factsales table in postgres
 ```
 psql -U it1 -d contoso -h localhost -c "update factsales set updatedate = '2016-01-01 00:00:00' where saleskey in (1,2);"
 ```
 
-- 12. In Hive, truncate staging table by running below in Hive view
+- In Hive, truncate staging table by running below in Hive view
 ```
 truncate table factsales;
 ```
 
-- 13. run incremental sqoop job for factsales to import updated records from postgres into hive staging table
+- run incremental sqoop job for factsales to import updated records from postgres into hive staging table
 ```
 sqoop job -exec factsales
 ```
-- 14. In Hive, check only records we changed were picked up in the hive staging table
+- In Hive, check only records we changed were picked up in the hive staging table
 ```
 SELECT * FROM default.factsales;
 ```
-- 15. In Hive, move data from staging table to final table (one at a time, using Hive view)
+- In Hive, move data from staging table to final table (one at a time, using Hive view)
   - first remove the records from final table that are also found in staging table
   - move data from staging table to final table
   - truncate staging table
@@ -317,7 +317,7 @@ insert into factsales_final select * from factsales;
 truncate table factsales;
 ```
 
-- 16. In Hive, check the records updated in hive final table 
+- In Hive, check the records updated in hive final table 
 ```
 select * from  factsales_final where saleskey in (1,2);
 ```
@@ -364,85 +364,50 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 
 - At this point we have shown how you can bulk import data from EDW/RDBMS into Hive and then incrementally keep the Hive tables updated periodically 
 
+------------------------
+
+
+##### Part 3: Import product-related tweets into Hive via Nifi
+
+
+- Twitter4J requires you to have a Twitter account and obtain developer keys by registering an "app". Create a Twitter account and app and get your consumer key/token and access keys/tokens:
+  - Open https://apps.twitter.com 
+  - sign in
+  - create new app
+  - fill anything
+  - create access tokens
+
+
+- Follow steps from earlier lab to install Nifi via Ambari, monitor certain tweets and push to Hive/Solr:
+https://community.hortonworks.com/articles/1282/sample-hdfnifi-flow-to-push-tweets-into-solrbanana.html
+
 ----------------
 
 
-##### Part 3 - Import web history data from log file to Hive via Nifi 
+##### Part 4 - Import web history data from log file to Hive via Nifi 
 
 - As it1, use beeline or Hive view to create table webtraffic to store the userid and web url enabling transactions and partition into day month year: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
  
 ````
 beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
-create table if not exists webtraffic (id int, val string) 
-partitioned by (year string,month string,day string) 
-clustered by (id) into 7 buckets 
-stored as orc 
-TBLPROPERTIES ('transactional'='true');
+create external table weblog(session int,visited timestamp,product string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS textfile
+location '/user/hive/weblog';
 "
 ````
 
 ![Image](../master/screenshots/create-webtraffic-table.png?raw=true)
 
-- Now lets configure the Flume agent. High level:
-  - The *source* will be of type exec that tails our weblog file using a timestamp intersept (i.e. flume interseptor adds timestamp header to the payload)
-  - The *channel* will be a memory channel which is ideal for flows that need higher throughput but could lose the data in the event of agent failures
-  - The *sink* will be of type Hive that writes userid and url to default.webtraffic table partitioned by year, month, day
-  - More details about each type of source, channel, sink are available [here](http://flume.apache.org/FlumeUserGuide.html) 
-- In Ambari > Flume > Service Actions > Turn off maintenance mode  
-- In Ambari > Flume > Configs > flume.conf enter the below, Save and restart Flume
-```
 
-## Flume NG Apache Log Collection
-## Refer to https://cwiki.apache.org/confluence/display/FLUME/Getting+Started
-##
+- *TODO* add steps to enable Nifi to tail web log file
 
-agent.sources = webserver
-agent.sources.webserver.type = exec
-agent.sources.webserver.command = tail -F /tmp/webtraffic.log
-agent.sources.webserver.batchSize = 20
-agent.sources.webserver.channels = memoryChannel
-agent.sources.webserver.interceptors = intercepttime
-agent.sources.webserver.interceptors.intercepttime.type = timestamp
 
-## Channels ########################################################
-agent.channels = memoryChannel
-agent.channels.memoryChannel.type = memory
-agent.channels.memoryChannel.capacity = 1000
-agent.channels.memoryChannel.transactionCapacity = 1000
-
-## Sinks ###########################################################
-
-agent.sinks = hiveout
-agent.sinks.hiveout.type = hive
-agent.sinks.hiveout.hive.metastore=thrift://localhost:9083
-agent.sinks.hiveout.hive.database=default
-agent.sinks.hiveout.hive.table=webtraffic
-agent.sinks.hiveout.hive.batchSize=1
-agent.sinks.hiveout.hive.partition=%Y,%m,%d
-agent.sinks.hiveout.serializer = DELIMITED
-agent.sinks.hiveout.serializer.fieldnames =id,val
-agent.sinks.hiveout.channel = memoryChannel
-```
-
-- (Optional) Start tailing the flume agent log file in one terminal...
-```
-tail -F /var/log/flume/flume-agent.log
-```
-
-- After a few seconds the agent log should contain the below
-```
-02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.source.ExecSource.start:163)  - Exec source starting with command:tail -F /tmp/webtraffic.log
-02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SINK, name: hiveout: Successfully registered new MBean.
-02 Jan 2015 20:35:31,782 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SINK, name: hiveout started
-02 Jan 2015 20:35:31,783 INFO  [lifecycleSupervisor-1-1] (org.apache.flume.sink.hive.HiveSink.start:611)  - hiveout: Hive Sink hiveout started
-02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.register:119)  - Monitored counter group for type: SOURCE, name: webserver: Successfully registered new MBean.
-02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
-```
-
-- Using another terminal window, as it1 user, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
+- Run the createlog-psql.sh script which will generate  dummy web traffic log events 
 ```
 cd ~/single-view-demo
-./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
+./createlog-mysql.sh /tmp/data/FactSales.csv 10 >> /tmp/webtraffic.log
 ```
 - (Optional) Tailing the webtraffic file in another terminal to see the webtraffic records
 ```
@@ -450,24 +415,12 @@ tail -F /tmp/webtraffic.log
 ```
 - The webtraffic.log should start displaying the webtraffic
 ```
-581842607,http://www.google.com
-493259972,http://www.yahoo.com
-607729813,http://cnn.com
-53802950,http://www.hortonworks.com
+1,1,2007-09-11 23:22:10,Samsung Galaxy Tab A 8.0
+2,1,2007-09-11 23:23:12,Apple iPhone 6S
+3,1,2007-09-11 23:23:31,Sony Xperia Z5 Premium
+4,1,2007-09-11 23:27:02,Microsoft Lumia 950
 ```
 
-- The Flume agent log should start outputting below
-```
-02 Jan 2015 20:42:37,380 INFO  [SinkRunner-PollingRunner-DefaultSinkProcessor] (org.apache.flume.sink.hive.HiveWriter.commitTxn:251)  - Committing Txn id 14045 to {metaStoreUri='thrift://localhost:9083', database='default', table='webtraffic', partitionVals=[2015, 01, 02] }
-```
-  - You may see the below errors. These are caused by Ambari Metrics service being down and can be ignored.
-  
-  ```
-  I/O exception (java.net.ConnectException) caught when processing request: Connection refused
-  Unable to send metrics to collector by address:http://sandbox.hortonworks.com:6188/ws/v1/timeline/metrics
-  ```
-  
-- This will run for ~6 min. You can take this time to sign up for a Twitter account and obtain developer keys (needed for the next part of the workshop)
 
 - After 6-7 min, notice that the script has completed and the webtraffic table now has records created (while waiting you can get your Twitter consumer key/secrets - see part 4)
 
@@ -483,22 +436,7 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 - Notice the table is stored in ORC format
 ![Image](../master/screenshots/screenshot-view-webtraffic-HDFS-ORC.png?raw=true)
 
-------------------------
 
-
-##### Part 4: Import tweets for users into Hive via Nifi
-
-
-- Twitter4J requires you to have a Twitter account and obtain developer keys by registering an "app". Create a Twitter account and app and get your consumer key/token and access keys/tokens:
-  - Open https://apps.twitter.com 
-  - sign in
-  - create new app
-  - fill anything
-  - create access tokens
-
-
-- Follow steps from earlier lab to install Nifi via Ambari, monitor certain tweets and push to Hive/Solr:
-https://community.hortonworks.com/articles/1282/sample-hdfnifi-flow-to-push-tweets-into-solrbanana.html
 
 ----------------
 
@@ -553,39 +491,45 @@ select count(*) from user_tweets_view;
 ```
 returns 400 rows
 
-- Correlate browsing history with PII data
+- Query most visited product query
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
-select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.last4ssn, w.val
-from persons_view p, webtraffic_view w 
-where w.id = p.people_id;
-"
-```
-Notice the last field contains the browsing history:
-![Image](../master/screenshots/lab/BI-query1.png?raw=true)
 
-- Correlate tweets with PII data
-```
-beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
-select t.userid, t.twitterid, p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.last4ssn, t.tweet 
-from persons_view p, user_tweets_view t 
-where t.userid = p.people_id;
+select product,count(1) popular 
+from weblog group by product order by popular desc limit 10;
 "
 ```
-Notice the last field contains the Tweet history:
-![Image](../master/screenshots/lab/BI-query2.png?raw=true)
 
-- Correlate all 3
+- Query for top products with most time spent by year
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
-select  p.firstname, p.lastname, p.sex, p.addresslineone, p.city, p.last4ssn, w.val, t.tweet
-from persons_view p, user_tweets_view t, webtraffic_view w 
-where w.id = t.userid and t.userid = p.people_id
-order by p.last4ssn;
+
+select product,year_visited, sum(time_spent) as total_time from
+(select table1.product,year(visited) as year_visited, 
+month(visited) as month,unix_timestamp(table1.lead_window_0) - unix_timestamp(table1.visited) as time_spent
+from (select product,visited,lead(visited)  over (PARTITION BY session) from weblog) table1 
+where table1.lead_window_0 is not NULL) table2
+group by product,year_visited 
+order by total_time desc limit 100;
+
 "
 ```
-Notice the last 2 field contains the browsing and Tweet history:
-![Image](../master/screenshots/lab/BI-query3.png?raw=true)
+
+
+- Query for most popular web_path
+```
+beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
+
+select web_path,count(1) as path_count
+from
+(select session,concat_ws("->",collect_list(product)) as web_path
+from weblog group by session) table1
+group by web_path
+order by path_count desc;
+
+"
+```
+
 
 - Notice that for these queries Hive view provides the option to view Visual Explain of the query for performance tuning.
 ![Image](../master/screenshots/lab/vizexplain-bi.png?raw=true)

@@ -206,10 +206,10 @@ tail -F /var/log/flume/flume-agent.log
 02 Jan 2015 20:35:31,785 INFO  [lifecycleSupervisor-1-0] (org.apache.flume.instrumentation.MonitoredCounterGroup.start:95)  - Component type: SOURCE, name: webserver started
 ```
   
-- Using another terminal window, run the createlog.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
+- Using another terminal window, run the createlog-mysql.sh script which will generate 400 dummy web traffic log events at a rate of one event per second
 ```
 cd ~/single-view-demo
-./createlog.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
+./createlog-mysql.sh ./data/PII_data_small.csv 400 >> /tmp/webtraffic.log
 ```
 - Start tailing the webtraffic file in another terminal
 ```
