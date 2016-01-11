@@ -145,7 +145,7 @@ ssh root@sandbox.hortonworks.com
 
 
 
-##### Part 2 - Import data from PostGres to Hive ORC table via Sqoop 
+##### Part 2 - Import data from PostGres to Hive table via Sqoop 
 
 - Note the hive queries shown below can either
   - run via beeline CLI from your terminal shell prompt or 
