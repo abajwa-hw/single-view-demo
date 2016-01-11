@@ -162,10 +162,6 @@ su it1
 cd
 git clone https://github.com/abajwa-hw/single-view-demo.git 
 ```
-- Inspect CSV of user personal data
-```
-cat ~/single-view-demo/data/PII_data_small.csv
-```
 
 - Download contoso (retail) data set into /tmp on sandbox
 
@@ -174,6 +170,11 @@ cd /tmp
 wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip
 unzip data.zip
 ```
+- Inspect one of the fils containing the CSV data
+```
+head /tmp/data/FactSales.csv
+```
+
 - As postgres user, login to Postgres and complete below to setup psql for user it1:
   - create contoso db
   - create it1 user
@@ -221,7 +222,7 @@ wget https://jdbc.postgresql.org/download/postgresql-9.4.1207.jar -P /usr/hdp/cu
 ```
 su - it1
 export PGPASSWORD=it1
-psql -U it1 -d contoso -h localhost -f contoso-psql.sql
+psql -U it1 -d contoso -h localhost -f ~/single-view-demo/contoso-psql.sql
 
 ```
 
