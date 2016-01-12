@@ -238,7 +238,8 @@ sqoop import-all-tables --username it1 --password it1 --connect jdbc:postgresql:
 ```
 
 - Ideally we would now convert all tables to final ORC tables in Hive. In this lab, we are showing how to do this for factsales table:
-  - Run below using the Hive view in Ambari (http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive), one sql at a time:
+  - Login to Ambari as it1/it1 and open the Hive view (http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive)
+  - Run below (one sql at a time):
 ```
 CREATE TABLE `factsales_final` (
 `SalesKey` int ,
@@ -264,11 +265,12 @@ CREATE TABLE `factsales_final` (
 clustered by (saleskey) into 7 buckets
 stored as orc
 TBLPROPERTIES ('transactional'='true')
-;
-
-insert into factsales_final select * from factsales;
+```
 
 ```
+insert into factsales_final select * from factsales;
+```
+
 #### Incremental import of data into Hive from RDBMS
 
 - Now that we did the one time bulk import, next we will setup an incremental sqoop job
