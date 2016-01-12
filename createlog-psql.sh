@@ -46,7 +46,7 @@ do
 			fi
 			timestamp=$(date -d @$unixtime +'%Y-%m-%d %H:%M:%S')
 		
-			echo "$sessionid,$userid,$timestamp,$randomwebsite"
+			echo "$sessionid-$userid,$userid,$timestamp,$randomwebsite"
 
 			if [[ "$maxitems" -gt 0 ]]; then
 			        #sleep for random time between 0-3s		        
