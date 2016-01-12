@@ -218,12 +218,10 @@ head /tmp/data/FactSales.csv
 
 
 
-- As it1 user connect to psql and create/import data from downloaded sample data (this may take a few minutes)
+- As it1 user, connect to psql and create/import data from downloaded sample data (this may take a few minutes)
 ```
-su - it1
 export PGPASSWORD=it1
 psql -U it1 -d contoso -h localhost -f ~/single-view-demo/contoso-psql.sql
-
 ```
 
 - Ensure sqoop can access tables in contoso db as it1 user
