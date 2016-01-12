@@ -408,7 +408,7 @@ location '/user/hive/weblog';
 - Run the createlog-psql.sh script which will generate  dummy web traffic log events 
 ```
 cd ~/single-view-demo
-./createlog-mysql.sh /tmp/data/FactSales.csv 10 >> /tmp/webtraffic.log
+./createlog-psql.sh /tmp/data/FactSales.csv 10 >> /tmp/webtraffic.log
 ```
 - (Optional) Tailing the webtraffic file in another terminal to see the webtraffic records
 ```
