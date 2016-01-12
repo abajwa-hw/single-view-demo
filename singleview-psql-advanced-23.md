@@ -340,9 +340,10 @@ beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 show tables;
 "
 ```
+- Notice that the user does not yet have access to any tables
 ![Image](../master/screenshots/lab/showtables.png?raw=true)
 
-- Now login to Ranger UI as admin/admin and create a policy for Marketing to access default db and persons_view table
+- Now login to Ranger UI as admin/admin and create a policy for Marketing to access default db and factsales_final table
   - Open http://sandbox.hortonworks.com:6080/index.html#!/service/1/policies/create and click Add New Policy
   - Create a policy with below details:
     - Policy name: Marketing view tables
@@ -352,7 +353,7 @@ show tables;
     - Group: Marketing
     - Permissions: select
   
- ![Image](../master/screenshots/lab/Ranger-policy-hive-views1.png?raw=true)  
+ ![Image](../master/screenshots/lab/Ranger-policy-hive-views-mktg.png?raw=true)  
 
 - As mktg1 try to query tables. To use the Hive view as mktg1 user, you can open the url in a different browser and login as mktg1: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 ```
