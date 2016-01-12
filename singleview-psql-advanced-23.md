@@ -374,7 +374,19 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
   - Notice the jobs run as it1 user were routed to the batch queue while the others went to the default queue
  ![Image](../master/screenshots/lab/YARN-UI1.png?raw=true)  
 
-- At this point we have shown how you can bulk import data from EDW/RDBMS into Hive and then incrementally keep the Hive tables updated periodically 
+- Open the Ranger audits tab at http://sandbox.hortonworks.com:6080/index.html#!/reports/audit/bigData and filter for:
+  - Service type: Hive
+  - Access type: SELECT
+ ![Image](../master/screenshots/lab/Ranger-audits-hive.png?raw=true)  
+
+- Notice that fine grained audit details are available each time a user tries to access Hive
+
+- Similarly you can change the filters to below to view HDFS audit for user it1:
+  - Service type: HDFS
+  - User: it1
+ ![Image](../master/screenshots/lab/Ranger-audits-HDFS.png?raw=true)  
+  
+- At this point we have shown how you can bulk import data from EDW/RDBMS into Hive and then incrementally keep the Hive tables updated periodically, using Ranger to manage authorization policies and audit 
 
 ------------------------
 
