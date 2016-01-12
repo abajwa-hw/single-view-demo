@@ -229,11 +229,13 @@ psql -U it1 -d contoso -h localhost -f ~/single-view-demo/contoso-psql.sql
 sqoop list-tables --connect jdbc:postgresql://localhost:5432/contoso --username it1 --password it1 -- schema contoso 
 ```
 
-- Make sure Hive service is up via Ambari IU and start the bulk load of all the PSql tables into hive (as text) using Sqoop. This will run for some time.
+- Make sure Hive service is up via Ambari UI:
+http://sandbox.hortonworks.com:8080/#/main/services/HIVE/summary
+
+- Start the bulk load of all the PSql tables into hive (as text) using Sqoop. This will run for some time.
 ```
 sqoop import-all-tables --username it1 --password it1 --connect jdbc:postgresql://localhost:5432/contoso  --hive-import  --direct
 ```
-
 
 - Ideally we would now convert all tables to final ORC tables in Hive. In this lab, we are showing how to do this for factsales table:
   - Run below using the Hive view in Ambari (http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive), one sql at a time:
