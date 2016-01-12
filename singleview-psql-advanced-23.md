@@ -43,9 +43,10 @@ ssh root@sandbox.hortonworks.com
 	sudo -u hdfs hadoop fs -chown mktg1:Marketing /user/mktg1
   ```
 
-  - In case your system time is not accurate, fix it to avoid errors from Twitter4J
+  - In case your system time is not accurate, fix it to avoid errors from Twitter in later steps
   
   ```
+	yum install -y ntp
 	service ntpd stop
 	ntpdate pool.ntp.org
 	service ntpd start
