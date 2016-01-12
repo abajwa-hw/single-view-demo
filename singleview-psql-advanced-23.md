@@ -207,14 +207,15 @@ head /tmp/data/FactSales.csv
 ----------------------
 
 
-###### Bulk import of data into Hive from RDBMS
-
-
 - Note the hive queries shown below can either
   - run via beeline CLI from your terminal shell prompt or 
   - using Hive view in Ambari by logging in as either it1 or mktg1 (depending on which user is supposed to run it): http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
     - make sure just to copy the SQL (and not the beeline command)
     - make sure to run the queries *one SQL at a time*
+
+
+###### Bulk import of data into Hive from RDBMS
+
 
 
 - As it1 user connect to psql and create/import data from downloaded sample data (this may take a few minutes)
