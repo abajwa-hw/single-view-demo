@@ -145,31 +145,8 @@ ssh root@sandbox.hortonworks.com
 
 ##### Part 2 - Import data from PostGres to Hive table via Sqoop 
 
-- Note the hive queries shown below can either
-  - run via beeline CLI from your terminal shell prompt or 
-  - using Hive view in Ambari by logging in as either it1 or mktg1 (depending on which user is supposed to run it): http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
-    - make sure just to copy the SQL (and not the beeline command)
-    - make sure to run the queries *one SQL at a time*
+###### Setup and download data
 
-- Login as it1
-```
-su - it1
-```
-- Pull the latest lab code/scripts
-```
-cd
-git clone https://github.com/abajwa-hw/single-view-demo.git 
-```
-
-- Download retail data set (contoso) into local /tmp dir on sandbox. More details on the data set available [here](https://en.wikipedia.org/wiki/Contoso)
-```
-wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip -P /tmp
-unzip data.zip
-```
-- Inspect one of the fils containing the CSV data
-```
-head /tmp/data/FactSales.csv
-```
 
 - As postgres user, login to Postgres and complete below to setup psql for user it1:
   - create contoso db
@@ -187,7 +164,7 @@ GRANT ALL PRIVILEGES ON DATABASE contoso to it1;
 exit
 ```
 
-- As root, complete below to complete setup of it1 user
+- Back as root, complete below to complete setup of it1 user
   - enable it1 user to login to psql by editing pg_hba.conf and add a line with: `host all all 127.0.0.1/32 md5`
 ```
 service ambari stop
@@ -196,23 +173,49 @@ echo "host all all 127.0.0.1/32 md5" >> /var/lib/pgsql/data/pg_hba.conf
 service postgresql start
 service ambari start
 ```
-  - sudo as hdfs to create home dir for it1 and set ownership
-```
-sudo -u hdfs hdfs dfs -mkdir /user/it1
-sudo -u hdfs hdfs dfs -chown it1 /user/it1
-```  
-
 
 - As root, setup Sqoop for postgres by downloading the appropriate JDBC jar from [here](https://jdbc.postgresql.org/download.html) e.g. "JDBC42 Postgresql Driver, Version 9.4-1207". Note: to confirm what version of postgres you have, run the following via psql: `SELECT version();`
 ```
 wget https://jdbc.postgresql.org/download/postgresql-9.4.1207.jar -P /usr/hdp/current/sqoop-client/lib
 ```
 
+**Next set of steps will be run as it1 user**
+
+
+- Login as it1
+```
+su - it1
+```
+- Pull the latest lab code/scripts
+```
+cd
+git clone https://github.com/abajwa-hw/single-view-demo.git 
+```
+
+- Download retail data set (contoso) into local /tmp dir on sandbox. More details on the data set available [here](https://en.wikipedia.org/wiki/Contoso)
+```
+cd /tmp
+wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip
+unzip data.zip
+```
+- Inspect one of the fils containing the CSV data
+```
+head /tmp/data/FactSales.csv
+```
+
+
 ----------------------
 
-#### Bulk import of data into Hive from RDBMS
 
-**Next set of steps will be run as it1 user**
+###### Bulk import of data into Hive from RDBMS
+
+
+- Note the hive queries shown below can either
+  - run via beeline CLI from your terminal shell prompt or 
+  - using Hive view in Ambari by logging in as either it1 or mktg1 (depending on which user is supposed to run it): http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
+    - make sure just to copy the SQL (and not the beeline command)
+    - make sure to run the queries *one SQL at a time*
+
 
 - As it1 user connect to psql and create/import data from downloaded sample data (this may take a few minutes)
 ```
