@@ -135,8 +135,9 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/ambari-mktg1-user-2.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-mktg1-user-3.png?raw=true)
 
-  
   - Note in a real scenario, these users would be part of LDAP/AD and Ambari would simply authenticate against it.
+
+- At this point, you should be able to login to Ambari as either it1 or mktg1 users
   
 ----------------
 
