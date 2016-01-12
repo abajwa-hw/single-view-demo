@@ -155,7 +155,7 @@ ssh root@sandbox.hortonworks.com
 ```
 su - it1
 ```
-- Pull the latest Hive streaming code/scripts
+- Pull the latest lab code/scripts
 ```
 cd
 git clone https://github.com/abajwa-hw/single-view-demo.git 
