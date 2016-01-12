@@ -119,7 +119,7 @@ ssh root@sandbox.hortonworks.com
 
 - In Ambari follow steps below:
   - Create a user with admin privileges via 'Manage Users' menu:
-    - user: it1  password: admin
+    - user: it1  password: it1
 
   ![Image](../master/screenshots/lab/ambari-adduser1.png?raw=true)
   ![Image](../master/screenshots/lab/ambari-adduser2.png?raw=true)
@@ -127,7 +127,7 @@ ssh root@sandbox.hortonworks.com
   ![Image](../master/screenshots/lab/ambari-adduser4.png?raw=true)
   
     - Create non-admin user via 'Manage Users' menu:
-      - user: mktg1 password: admin
+      - user: mktg1 password: mktg1
       - under 'Permissions': add readonly permission to mktg1
       - under 'Views': Navigate to Hive > Hive > Under 'Permissions' grant mktg1 access to Hive view
 
