@@ -153,7 +153,7 @@ ssh root@sandbox.hortonworks.com
 
 - Login as it1
 ```
-su it1
+su - it1
 ```
 - Pull the latest Hive streaming code/scripts
 ```
@@ -161,11 +161,9 @@ cd
 git clone https://github.com/abajwa-hw/single-view-demo.git 
 ```
 
-- Download contoso (retail) data set into /tmp on sandbox
-
+- Download retail data set (contoso) into local /tmp dir on sandbox. More details on the data set available [here](https://en.wikipedia.org/wiki/Contoso)
 ```
-cd /tmp
-wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip
+wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip -P /tmp
 unzip data.zip
 ```
 - Inspect one of the fils containing the CSV data
