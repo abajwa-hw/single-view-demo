@@ -4,7 +4,7 @@
 - Goals:
   - EDW optimization: demonstrate how you can bulk import data from EDW/RDBMS into Hive and then incrementally keep the Hive tables updated periodically 
   - Single view: demonstrate how you can use Hive to get a single view of product by combining ETL/CRM data from EDW/DB, along with web traffic and social media data (collected using HDF)
-
+  - Authorization/Audit: show how Ranger provides a single pane view to set authorization policies and review audits across Hadoop components
 
 #### Demo overview
 In this lab we model a hadoop cluster with 2 tenants, IT & Marketing.  IT is responsible for onboarding data while Marketing is responsible of running analytical queries.  IT jobs are batch oriented while Marketing queries are typically interactive in nature.  The lab includes steps for setting queues, onboarding data, applying security and running analytical queries.  For the lab, we allocate cluster capacity equally between IT and Marketing.
@@ -564,8 +564,8 @@ order by path_count desc;
 
 
 - Finally notice how Ranger is keeping audit: http://sandbox.hortonworks.com:6080/index.html#!/reports/audit/bigData
-  - Ranger is keeping tab of what user is accessing what resource across Hadoop components
-  - Ranger also provides a single pane view to set authorization policies and review audits across Hadoop
+  - Ranger provides a single pane view to set authorization policies across Hadoop components
+  - Ranger is also keeping track of what user is accessing what resource across Hadoop components
 
 ![Image](../master/screenshots/lab/ranger-audits.png?raw=true)
 
