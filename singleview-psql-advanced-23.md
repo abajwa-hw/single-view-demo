@@ -299,7 +299,9 @@ psql -U it1 -d contoso -h localhost -c "update factsales set updatedate = '2016-
 
 - In Hive, truncate staging table by running below in Hive view
 ```
+beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 truncate table factsales;
+"
 ```
 
 - run incremental sqoop job for factsales to import updated records from postgres into hive staging table
