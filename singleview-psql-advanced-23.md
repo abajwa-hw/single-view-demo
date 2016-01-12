@@ -310,26 +310,32 @@ sqoop job -exec factsales
 ```
 - In Hive, check only records we changed were picked up in the hive staging table
 ```
+beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 SELECT * FROM default.factsales;
+"
 ```
 - In Hive, move data from staging table to final table (one at a time, using Hive view)
   - first remove the records from final table that are also found in staging table
   - move data from staging table to final table
   - truncate staging table
 ```
+beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 delete from factsales_final where saleskey in (select saleskey from factsales);
 insert into factsales_final select * from factsales;
 truncate table factsales;
+"
 ```
 
 - In Hive, check the records updated in hive final table 
 ```
+beeline -u 'jdbc:hive2://localhost:10000/default' -n it1 -p '' -e "
 select * from  factsales_final where saleskey in (1,2);
+"
 ```
 
-- As mktg1 try to query tables
+- In a separate browser tab/terminal session, as mktg1 try to query tables
 ```
-su mktg1
+su - mktg1
 beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
 show tables;
 "
@@ -337,11 +343,11 @@ show tables;
 ![Image](../master/screenshots/lab/showtables.png?raw=true)
 
 - Now login to Ranger UI as admin/admin and create a policy for Marketing to access default db and persons_view table
-  - Open http://sandbox.hortonworks.com:6080/index.html#!/service/2/policies and click Add New Policy
+  - Open http://sandbox.hortonworks.com:6080/index.html#!/service/1/policies/create and click Add New Policy
   - Create a policy with below details:
     - Policy name: Marketing view tables
     - Hive Database: default
-    - table: persons_view
+    - table: factsales_final
     - Hive column: *
     - Group: Marketing
     - Permissions: select
@@ -351,14 +357,14 @@ show tables;
 - As mktg1 try to query tables. To use the Hive view as mktg1 user, you can open the url in a different browser and login as mktg1: http://sandbox.hortonworks.com:8080/#/main/views/HIVE/1.0.0/Hive
 ```
 beeline -u 'jdbc:hive2://localhost:10000/default' -n mktg1 -p '' -e "
-select * from persons_view limit 5
+select * from factsales_final limit 5
 "
 ```
 
-- As it1 user, open Files view and navigate to /apps/hive/warehouse/persons and open one of the delta_* folders and download/view one of the bucket* files
+- As it1 user, open Files view and navigate to /apps/hive/warehouse/factsales_final and open one of the delta_* folders and download/view one of the bucket* files
 
 http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
-![Image](../master/screenshots/screenshot-filesview-persons-HDFS.png?raw=true)
+![Image](../master/screenshots/screenshot-filesview-factsales-HDFS.png?raw=true)
 
 - Notice the table is stored in ORC format
 ![Image](../master/screenshots/screenshot-hiveview-persons-data-ORC.png?raw=true)
