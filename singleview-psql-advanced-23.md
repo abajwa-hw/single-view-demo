@@ -394,7 +394,8 @@ http://sandbox.hortonworks.com:8080/#/main/views/FILES/1.0.0/Files
 ##### Part 3: Import product-related tweets into Hive via Nifi
 
 
-- Twitter4J requires you to have a Twitter account and obtain developer keys by registering an "app". Create a Twitter account and app and get your consumer key/token and access keys/tokens:
+To monitor tweets, Twitter requires you to have an account and obtain developer keys by registering an "app". Follow steps below to do this:
+- Create a Twitter account and app and get your consumer key/token and access keys/tokens:
   - Open https://apps.twitter.com 
   - sign in
   - create new app
