@@ -351,7 +351,7 @@
     },
     {
       "title": "bulk load Tables from Psql into Hive",
-      "text": "%sh\nsqoop import-all-tables --username zeppelin --password zeppelin --connect jdbc:postgresql://localhost:5432/contoso  --hive-import  --direct \u003e /home/zeppelin/sqoop.import-all.log",
+      "text": "%sh\nsqoop import-all-tables --username zeppelin --password zeppelin --connect jdbc:postgresql://localhost:5432/contoso  --hive-import  --direct",
       "dateUpdated": "Jan 13, 2016 2:35:44 PM",
       "config": {
         "colWidth": 12.0,
