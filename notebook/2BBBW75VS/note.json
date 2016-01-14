@@ -211,7 +211,7 @@
     },
     {
       "title": "Download retail (contoso) dataset",
-      "text": "%sh\ncd /tmp\n#wget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip\nunzip data.zip\nhead /tmp/data/FactSales.csv",
+      "text": "%sh\ncd /tmp\nwget https://www.dropbox.com/s/r70i8j1ujx4h7j8/data.zip\nunzip data.zip\nhead /tmp/data/FactSales.csv",
       "dateUpdated": "Jan 13, 2016 2:00:50 PM",
       "config": {
         "colWidth": 12.0,
