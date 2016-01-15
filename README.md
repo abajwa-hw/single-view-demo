@@ -17,7 +17,15 @@ High level steps:
 
 - Lab for HDP 2.3 sandbox/PostGres can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-psql-advanced-23.md)
 
-
+- For demo purposes, a simplified version of this is available as a Zeppelin notebook:
+  - Web version (readonly) available [here](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hvcnRvbndvcmtzLWdhbGxlcnkvemVwcGVsaW4tbm90ZWJvb2tzL21hc3Rlci8yQkJCVzc1VlMvbm90ZS5qc29u)
+  - Code available [here](https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2BBBW75VS/note.json)
+  - To install on sandbox:
+  ```
+  curl -sSL https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/update_all_notebooks.sh | sudo -u zeppelin -E sh
+  ```
+  - To install on cluster: [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service) and this notebook will be automatically installed
+  
 #### Older labs
 
 - Lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-advanced-23.md)
