@@ -30,7 +30,7 @@ This is available in 2 flavors:
   ```
   - To install on cluster: [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service) and this notebook will be automatically installed
   
-- Now launch Zeppelin on your sandbox/cluster, open the "Single view" notebook and follow the instructions there
+- Now launch Zeppelin on your sandbox/cluster, open the "Single view" notebook and follow the instructions there and execute the cells one by one
 
 #### Manual Lab
 
