@@ -35,7 +35,11 @@ This is available in 2 flavors:
   ```
   - Otherwise, to install Zeppelin on a cluster (or older sandbox) follow steps to: [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service). In this case, this notebook will automatically be installed as one of the demo notebooks.
   
-- Now launch Zeppelin on your sandbox/cluster, open the "Single view" notebook and follow the instructions there and execute the cells one by one
+- Now run through the 'Single view demo' notebook:
+  - launch Zeppelin UI on your sandbox/cluster e.g. http://sandbox.hortonworks.com:9995
+  - open the "Single view" notebook 
+  - run the setup steps
+  - execute the cells one by one
 
 #### Manual Lab
 
