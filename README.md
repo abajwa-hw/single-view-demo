@@ -19,7 +19,7 @@ This is available in 2 flavors:
 
 #### Zeppelin Notebook
 
-- For demo purposes and those enrolled into the "Technical Sales Professional" course, a simplified version of this is available as a Zeppelin notebook:
+- For demo purposes and for students enrolled into the "Technical Sales Professional" course, a simplified version of this is available as a Zeppelin notebook:
   - Web version (readonly) available [here](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hvcnRvbndvcmtzLWdhbGxlcnkvemVwcGVsaW4tbm90ZWJvb2tzL21hc3Rlci8yQkJCVzc1VlMvbm90ZS5qc29u)
   - Code available [here](https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2BBBW75VS/note.json)
 
