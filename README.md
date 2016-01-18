@@ -12,12 +12,12 @@ High level steps:
 - 5. Analyze tables to populate statistics
 - 6. Use Hive view to correlate the data from multiple data sources
 
-This is available in 2 flavors:
+The demo is available in 2 flavors:
   - Zeppelin notebook
   - Manual lab 
 
 
-#### Zeppelin Notebook
+#### Option 1: Zeppelin Notebook
 
 - For demo purposes and for students enrolled into the "Technical Sales Professional" course, a simplified version of this is available as a Zeppelin notebook:
   - Web version (readonly) available [here](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hvcnRvbndvcmtzLWdhbGxlcnkvemVwcGVsaW4tbm90ZWJvb2tzL21hc3Rlci8yQkJCVzc1VlMvbm90ZS5qc29u)
@@ -41,13 +41,13 @@ This is available in 2 flavors:
   - run the setup steps
   - execute the cells one by one
 
-#### Manual Lab
+#### Option 2: Manual Lab
 
 - Lab for HDP 2.3 sandbox/PostGres can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-psql-advanced-23.md)
   - This includes security features via Ranger
 
 
-##### Older labs
+###### Older labs
 
 - Lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-advanced-23.md)
 - Basic lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-basic-23.md)
