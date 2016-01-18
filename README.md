@@ -38,7 +38,7 @@ This is available in 2 flavors:
   - This includes security features via Ranger
 
 
-#### Older labs
+##### Older labs
 
 - Lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-advanced-23.md)
 - Basic lab for HDP 2.3 sandbox/MySQL can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-mysql-basic-23.md)
