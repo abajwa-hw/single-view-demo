@@ -1,8 +1,8 @@
 ## HDP Single view demo
 
 
-#### Lab overview
-In this lab we demonstrate how HDP sandbox can be used to build a single view of a product or customer
+#### overview
+In this demo/lab we demonstrate how HDP sandbox can be used to build a single view of a product or customer
 
 High level steps:
 - 1. Start HDP 2.3 sandbox and complete pre-req steps
@@ -12,12 +12,12 @@ High level steps:
 - 5. Analyze tables to populate statistics
 - 6. Use Hive view to correlate the data from multiple data sources
 
-The demo is available in 2 flavors:
+The demo/lab is available in 2 flavors:
   - Zeppelin notebook
   - Manual lab 
 
 
-#### Option 1: Zeppelin Notebook
+#### Option 1: Demo using Zeppelin Notebook
 
 - For demo purposes and for students enrolled into the "Technical Sales Professional" course, a simplified version of this is available as a Zeppelin notebook:
   - Web version (readonly) available [here](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hvcnRvbndvcmtzLWdhbGxlcnkvemVwcGVsaW4tbm90ZWJvb2tzL21hc3Rlci8yQkJCVzc1VlMvbm90ZS5qc29u)
