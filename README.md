@@ -33,7 +33,7 @@ This is available in 2 flavors:
   ```
   curl -sSL https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/update_all_notebooks.sh | sudo -u zeppelin -E sh
   ```
-  - Otherwise, to install Zeppelin on a cluster (or older sandbox): [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service). In this case, this notebook will automatically be installed as one of the demo notebooks.
+  - Otherwise, to install Zeppelin on a cluster (or older sandbox) follow steps to: [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service). In this case, this notebook will automatically be installed as one of the demo notebooks.
   
 - Now launch Zeppelin on your sandbox/cluster, open the "Single view" notebook and follow the instructions there and execute the cells one by one
 
