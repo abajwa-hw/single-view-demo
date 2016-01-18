@@ -23,12 +23,16 @@ This is available in 2 flavors:
   - Web version (readonly) available [here](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hvcnRvbndvcmtzLWdhbGxlcnkvemVwcGVsaW4tbm90ZWJvb2tzL21hc3Rlci8yQkJCVzc1VlMvbm90ZS5qc29u)
   - Code available [here](https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2BBBW75VS/note.json)
 
+- Pre-reqs:
+  - HDP 2.3.2 sandbox (or later) from [here](http://hortonworks.com/sandbox) where Zeppelin is already installed
+  - 
+  
 - Install steps:
-  - To install on sandbox:
+  - To install this notebook on current [HDP sandbox](http://hortonworks.com/sandbox) where Zeppelin is already installed:
   ```
   curl -sSL https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/update_all_notebooks.sh | sudo -u zeppelin -E sh
   ```
-  - To install on cluster: [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service) and this notebook will be automatically installed
+  - Otherwise, to install Zeppelin on a cluster (or older sandbox): [install Zeppelin via Ambari](https://github.com/hortonworks-gallery/ambari-zeppelin-service). In this case, this notebook will automatically be installed as one of the demo notebooks.
   
 - Now launch Zeppelin on your sandbox/cluster, open the "Single view" notebook and follow the instructions there and execute the cells one by one
 
