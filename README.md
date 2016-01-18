@@ -29,7 +29,7 @@ This is available in 2 flavors:
   - Ambari installed HDP cluster 
   
 - To Install:
-  - To install this notebook on current [HDP sandbox](http://hortonworks.com/sandbox) where Zeppelin is already installed:
+  - To install this notebook on current [HDP sandbox](http://hortonworks.com/sandbox) (where Zeppelin is already installed):
   ```
   curl -sSL https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/update_all_notebooks.sh | sudo -u zeppelin -E sh
   ```
