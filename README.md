@@ -24,7 +24,7 @@ The demo is available in 2 flavors:
   - Code available [here](https://raw.githubusercontent.com/hortonworks-gallery/zeppelin-notebooks/master/2BBBW75VS/note.json)
 
 - Pre-reqs:
-  - HDP 2.3.2 sandbox (or later) from [here](http://hortonworks.com/sandbox) where Zeppelin is already installed 
+  - HDP 2.3.2 sandbox (or later) where Zeppelin is already installed. Can be downloaded from [here](http://hortonworks.com/sandbox)
   - OR
   - Ambari installed HDP cluster 
   
