@@ -25,7 +25,7 @@ This is available in 2 flavors:
 
 - Pre-reqs:
   - HDP 2.3.2 sandbox (or later) from [here](http://hortonworks.com/sandbox) where Zeppelin is already installed 
-  OR
+  - OR
   - Ambari installed HDP cluster 
   
 - To Install:
