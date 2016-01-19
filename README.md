@@ -14,7 +14,7 @@ High level steps:
 
 The demo/lab is available in 2 flavors:
   - Zeppelin notebook
-  - Manual lab/workshop 
+  - Lab/workshop 
 
 
 #### Option 1: Demo using Zeppelin Notebook
