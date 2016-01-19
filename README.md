@@ -22,7 +22,7 @@ The demo/lab is available in 2 flavors:
 This is a simplified version of the lab available as a Zeppelin notebook.
 
 - Audience:
-  - For those looking for a 'single view' demo with minimal CLI steps required
+  - For those looking for an automated 'single view' demo with minimal CLI steps required
   - For students enrolled into the "Technical Sales Professional" course
 
 - Materials:
