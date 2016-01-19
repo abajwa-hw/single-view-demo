@@ -12,14 +12,14 @@ High level steps:
 - 5. Analyze tables to populate statistics
 - 6. Use Hive view to correlate the data from multiple data sources
 
-The demo/lab is available in 2 flavors:
-  - Zeppelin notebook
-  - Lab/workshop 
+The materials is available in 2 flavors:
+  - Zeppelin notebook demo
+  - Hands on Lab/Workshop 
 
 
 #### Option 1: Demo using Zeppelin Notebook
 
-This is a simplified version of the lab available as a Zeppelin notebook.
+This is a simplified version of the lab available as a Zeppelin notebook that automates the steps.
 
 - Audience:
   - For those looking for an automated 'single view' demo with minimal CLI steps required
@@ -47,7 +47,7 @@ This is a simplified version of the lab available as a Zeppelin notebook.
   - run the setup steps
   - execute the cells one by one
 
-#### Option 2: Manual Lab/Workshop
+#### Option 2: Lab/Workshop
 
 This is a longer version of the demo available as a half day lab/workshop. This option includes features not available in the demo version:
   - YARN features (queues, preemption) 
