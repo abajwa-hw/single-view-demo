@@ -29,7 +29,7 @@ The materials is available in 2 flavors:
   - Hands on Lab/Workshop 
 
 Notes:
-  - The data set being downloaded is ~500MB so if you are re-using a sandbox, you may need to remove unused files to cleanup space 
+  - The data set being downloaded to /tmp is ~500MB so if you are re-using a sandbox VM, you may need to remove unused files to cleanup space 
 
 #### Option 1: Demo using Zeppelin Notebook
 
