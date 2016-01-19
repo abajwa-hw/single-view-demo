@@ -14,7 +14,7 @@ High level steps:
 
 The demo/lab is available in 2 flavors:
   - Zeppelin notebook
-  - Manual lab 
+  - Manual lab/workshop 
 
 
 #### Option 1: Demo using Zeppelin Notebook
@@ -47,15 +47,15 @@ This is a simplified version of the lab available as a Zeppelin notebook.
   - run the setup steps
   - execute the cells one by one
 
-#### Option 2: Manual Lab
+#### Option 2: Manual Lab/Workshop
 
-This is a longer version of the demo available as a half day lab. This option includes features not available in the demo version:
+This is a longer version of the demo available as a half day lab/workshop. This option includes features not available in the demo version:
   - YARN features (queues, preemption) 
   - Hive features (transactions and sessions)
   - security features (authorization policies and audit via Ranger)
 
 - Audience:
-  - For those looking for a hand on half day lab that requires CLI usage
+  - For those looking for a hands-on half-day lab/workshop that requires CLI usage and covers more feautures
   
 - Materials:   
   - Lab steps for HDP 2.3 sandbox/PostGres can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-psql-advanced-23.md)
