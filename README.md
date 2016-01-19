@@ -1,7 +1,7 @@
 ## HDP Single view demo
 
 
-#### overview
+#### Overview
 In this demo/lab we demonstrate how HDP sandbox can be used to build a single view of a product or customer
 
 High level steps:
