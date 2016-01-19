@@ -22,8 +22,8 @@ The demo/lab is available in 2 flavors:
 This is a simplified version of the lab available as a Zeppelin notebook.
 
 - Audience:
-  - For a 'single view' demo 
-  - For students enrolled into the "Technical Sales Professional" course, 
+  - For those looking for a 'single view' demo with minimal CLI steps required
+  - For students enrolled into the "Technical Sales Professional" course
 
 - Materials:
   - Web version (readonly) of notebook available [here](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hvcnRvbndvcmtzLWdhbGxlcnkvemVwcGVsaW4tbm90ZWJvb2tzL21hc3Rlci8yQkJCVzc1VlMvbm90ZS5qc29u)
@@ -49,8 +49,16 @@ This is a simplified version of the lab available as a Zeppelin notebook.
 
 #### Option 2: Manual Lab
 
-- Lab steps for HDP 2.3 sandbox/PostGres can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-psql-advanced-23.md)
-  - This includes security features via Ranger
+This is a longer version of the demo available as a half day lab. This option includes features not available in the demo version:
+  - YARN features (queues, preemption) 
+  - Hive features (transactions and sessions)
+  - security features (authorization policies and audit via Ranger)
+
+- Audience:
+  - For those looking for a hand on half day lab that requires CLI usage
+  
+- Materials:   
+  - Lab steps for HDP 2.3 sandbox/PostGres can be found [here](https://github.com/abajwa-hw/single-view-demo/blob/master/singleview-psql-advanced-23.md)
 
 
 ###### Older labs
