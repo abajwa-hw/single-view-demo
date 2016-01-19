@@ -2,7 +2,7 @@
 
 
 #### Overview
-In this demo/lab we demonstrate how HDP sandbox can be used to build a single view of a product or customer
+In this demo/lab we demonstrate how HDP sandbox + HDF can be used to build a single view of a product or customer
 
 High level steps:
 - 1. Start HDP 2.3 sandbox and complete pre-req steps
@@ -11,6 +11,18 @@ High level steps:
 - 4. Nifi/Storm - import related tweets into Hive  
 - 5. Analyze tables to populate statistics
 - 6. Use Hive view to correlate the data from multiple data sources
+
+
+Components used:
+ - HDP
+   - Ambari
+   - Hive
+   - Sqoop
+   - Postgres/Mysql
+   - YARN/Ranger (in the workshop version)
+ - Zeppelin     
+ - HDF
+
 
 The materials is available in 2 flavors:
   - Zeppelin notebook demo
@@ -49,7 +61,7 @@ This is a simplified version of the lab available as a Zeppelin notebook that au
 
 #### Option 2: Lab/Workshop
 
-This is a longer version of the demo available as a half day lab/workshop. This option includes features not available in the demo version:
+This is a longer version of the demo available as a hand-on half-day lab/workshop. This option includes features not available in the demo version:
   - YARN features (queues, preemption) 
   - Hive features (transactions and sessions)
   - security features (authorization policies and audit via Ranger)
