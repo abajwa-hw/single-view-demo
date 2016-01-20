@@ -10,7 +10,7 @@ High level steps:
 - 3. Nifi/Flume - Import simulated web traffic logs into Hive
 - 4. Nifi/Storm - import related tweets into Hive  
 - 5. Analyze tables to populate statistics
-- 6. Use Hive view to correlate the data from multiple data sources
+- 6. Use Zeppelin/Hive view to correlate the data from multiple data sources
 
 
 Components used:
@@ -30,6 +30,7 @@ The materials is available in 2 flavors:
 
 Notes:
   - The data set being downloaded to /tmp is ~500MB so if you are re-using a sandbox VM, you may need to remove unused files to cleanup space 
+  - To check space requirement: run `df -h /`
 
 #### Option 1: Demo using Zeppelin Notebook
 
